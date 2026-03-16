@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="기관급 미국 주식 심층 분석 앱. Bloomberg Terminal의 1/20 가격으로 SEC 내부자거래, AI 교차분석, 기관투자자 동향을 실시간으로 파악하세요." />
+  <meta name="description" content="기관급 미국 주식 심층 분석 앱. Bloomberg Terminal의 1/20 가격으로 SEC 내부자거래, 다각도 교차분석, 기관투자자 동향을 실시간으로 파악하세요." />
   <title>StockLens — 기관급 데이터를 내 손안에</title>
   <style>
     /* ── 변수 ── */
@@ -332,7 +332,8 @@
       line-height: 1;
       margin-bottom: 4px;
     }
-    .plan-period { font-size: 14px; color: var(--grey); margin-bottom: 28px; }
+    .plan-period { font-size: 14px; color: var(--grey); margin-bottom: 8px; }
+    .plan-app-price { font-size: 12px; color: var(--grey); opacity: 0.7; margin-bottom: 20px; }
     .plan-features { list-style: none; margin-bottom: 28px; }
     .plan-features li {
       display: flex;
@@ -611,7 +612,7 @@
   <div class="container">
     <span class="section-label">핵심 기능</span>
     <h2 class="section-title">기관투자자가 보는 데이터,<br/>이제 개인도 접근 가능합니다</h2>
-    <p class="section-sub">SEC 공시, AI 분석, 내부자 거래 데이터를 하나의 앱에서 통합해 제공합니다.</p>
+    <p class="section-sub">SEC 공시, StockLens Intelligence 분석, 내부자 거래 데이터를 하나의 앱에서 통합해 제공합니다.</p>
 
     <div class="features-grid">
       <div class="feature-card">
@@ -622,9 +623,9 @@
       </div>
       <div class="feature-card">
         <div class="feature-icon">🧠</div>
-        <div class="feature-title">AI 교차분석 (재무 + 감성 + 내부자)</div>
-        <p class="feature-desc">재무제표 4개 분기, 시장 감성 지수, 뉴스 헤드라인, 내부자 거래 데이터를 StockLens가 동시에 분석해 핵심 신호만 추출합니다.</p>
-        <span class="feature-tag">자체 AI 분석 엔진</span>
+        <div class="feature-title">다각도 교차분석 (재무 + 감성 + 내부자)</div>
+        <p class="feature-desc">재무제표 4개 분기, 시장 감성 지수, 뉴스 헤드라인, 내부자 거래 데이터를 StockLens Intelligence가 동시에 분석해 핵심 신호만 추출합니다.</p>
+        <span class="feature-tag">StockLens Intelligence</span>
       </div>
       <div class="feature-card">
         <div class="feature-icon">🔮</div>
@@ -652,13 +653,15 @@
         <div class="plan-price">₩0</div>
         <div class="plan-period">영구 무료</div>
         <ul class="plan-features">
-          <li class="active"><span class="check">✓</span> 종목 기본 프로필 조회</li>
-          <li class="active"><span class="check">✓</span> 주가 히스토리 차트</li>
-          <li class="active"><span class="check">✓</span> 최신 뉴스 5건</li>
-          <li><span class="cross">✕</span> AI 분석 (잠김)</li>
-          <li><span class="cross">✕</span> 재무제표 상세</li>
-          <li><span class="cross">✕</span> 내부자 거래 데이터</li>
-          <li><span class="cross">✕</span> 기관 포지션 (13F)</li>
+          <li class="active"><span class="check">✓</span> 종목 검색 3회/일</li>
+          <li class="active"><span class="check">✓</span> 주가 + 차트 (1년)</li>
+          <li class="active"><span class="check">✓</span> 기업 기본 정보</li>
+          <li class="active"><span class="check">✓</span> 재무제표 1년치</li>
+          <li class="active"><span class="check">✓</span> 최신 뉴스</li>
+          <li><span class="cross">✕</span> 뉴스 감성 분석</li>
+          <li><span class="cross">✕</span> 내부자거래 (SEC Form 4)</li>
+          <li><span class="cross">✕</span> StockLens Intelligence 분석 리포트</li>
+          <li><span class="cross">✕</span> 기관 지분 변동 (13F)</li>
         </ul>
         <a href="#" class="plan-cta outline">무료로 시작</a>
       </div>
@@ -667,15 +670,20 @@
       <div class="plan-card">
         <div class="plan-name">Analyst</div>
         <div class="plan-price">₩99,000</div>
-        <div class="plan-period">/ 월 (앱 내 구독 시 ₩139,000)</div>
+        <div class="plan-period">/ 월 &nbsp;·&nbsp; <span style="color:var(--red)">웹 구독이 더 저렴해요</span></div>
+        <div class="plan-app-price">앱 내 구독 시 ₩129,000/월</div>
         <ul class="plan-features">
-          <li class="active"><span class="check">✓</span> Free 모든 기능 포함</li>
-          <li class="active"><span class="check">✓</span> AI 종목 분석 (요약·강·약 신호)</li>
-          <li class="active"><span class="check">✓</span> 재무제표 4개 분기 전체</li>
-          <li class="active"><span class="check">✓</span> 시장 감성 지수 (Finnhub)</li>
-          <li class="active"><span class="check">✓</span> 내부자 거래 목록</li>
-          <li><span class="lock">🔒</span> CEO 패턴 분석 (Oracle 전용)</li>
-          <li><span class="lock">🔒</span> 기관 포지션 13F (Oracle 전용)</li>
+          <li class="active"><span class="check">✓</span> 종목 검색 20회/일</li>
+          <li class="active"><span class="check">✓</span> 주가 + 차트 (3년)</li>
+          <li class="active"><span class="check">✓</span> 재무제표 3년치</li>
+          <li class="active"><span class="check">✓</span> 뉴스 감성 분석</li>
+          <li class="active"><span class="check">✓</span> 내부자거래 (SEC Form 4)</li>
+          <li class="active"><span class="check">✓</span> 공매도 잔고 + 미결제 데이터</li>
+          <li class="active"><span class="check">✓</span> StockLens Intelligence 분석 리포트</li>
+          <li class="active"><span class="check">✓</span> 분석 결과 1시간 보관</li>
+          <li class="active"><span class="check">✓</span> 만료 전 앱 내 알림</li>
+          <li><span class="lock">🔒</span> 기관 지분 변동 13F (Oracle 전용)</li>
+          <li><span class="lock">🔒</span> 실시간 변경사항 자동 감지 (Oracle 전용)</li>
         </ul>
         <a href="#" class="plan-cta outline">Analyst 시작하기</a>
       </div>
@@ -685,19 +693,26 @@
         <div class="plan-badge">가장 인기</div>
         <div class="plan-name">Oracle</div>
         <div class="plan-price">₩149,000</div>
-        <div class="plan-period">/ 월 (앱 내 구독 시 ₩209,000)</div>
+        <div class="plan-period">/ 월 &nbsp;·&nbsp; <span style="color:var(--gold)">웹 구독이 더 저렴해요</span></div>
+        <div class="plan-app-price">앱 내 구독 시 ₩199,000/월</div>
         <ul class="plan-features">
           <li class="active"><span class="check">✓</span> Analyst 모든 기능 포함</li>
-          <li class="active"><span class="check">✓</span> CEO 내부자 6개월 패턴 분석</li>
-          <li class="active"><span class="check">✓</span> 기관투자자 포지션 변동 (13F)</li>
-          <li class="active"><span class="check">✓</span> 지정학 리스크 자동 감지</li>
-          <li class="active"><span class="check">✓</span> 실적발표 컨퍼런스콜 톤 분석</li>
-          <li class="active"><span class="check">✓</span> AI 9개 필드 심층 분석</li>
-          <li class="active"><span class="check">✓</span> 우선 캐시 갱신 (1시간)</li>
+          <li class="active"><span class="check">✓</span> 무제한 검색</li>
+          <li class="active"><span class="check">✓</span> 주가 + 차트 (5년) · 재무제표 5년치</li>
+          <li class="active"><span class="check">✓</span> CEO/임원 매매 패턴 분석</li>
+          <li class="active"><span class="check">✓</span> 실적발표 핵심 발언 요약</li>
+          <li class="active"><span class="check">✓</span> 국제정세 리스크 감지</li>
+          <li class="active"><span class="check">✓</span> 기관 지분 변동 (13F)</li>
+          <li class="active"><span class="check">✓</span> 의회/상원의원 매매 내역</li>
+          <li class="active"><span class="check">✓</span> 실시간 변경사항 자동 감지</li>
+          <li class="active"><span class="check">✓</span> 변경 히스토리 30일 보관</li>
+          <li class="active"><span class="check">✓</span> 만료 전 푸시 알림 · 재분석 무제한</li>
         </ul>
         <a href="#" class="plan-cta primary">Oracle 시작하기</a>
       </div>
     </div>
+
+    <p style="text-align:center;margin-top:20px;font-size:13px;color:var(--grey)">Apple 정책에 따라 앱 내 구독 가격이 상이할 수 있습니다</p>
   </div>
 </section>
 
@@ -769,7 +784,7 @@
         <li>뉴스 헤드라인 및 시장 감성 분석 (Finnhub API 기반)</li>
         <li>SEC EDGAR Form 4 내부자 거래 공시 데이터 (Analyst 플랜 이상)</li>
         <li>기관투자자 13F 포지션 보고서 분석 (Oracle 플랜 전용)</li>
-        <li>Claude AI 기반 종목 교차 분석 — 4개 필드(Analyst) / 9개 필드 심층(Oracle)</li>
+        <li>StockLens Intelligence 다각도 교차 분석 — 기본 리포트(Analyst) / 심층 분석(Oracle)</li>
       </ul>
     </div>
 
@@ -784,14 +799,14 @@
         <li>주가 데이터는 실시간이 아닐 수 있으며, 최대 15분 지연될 수 있습니다.</li>
         <li>투자 결정 전 반드시 원본 공시 자료(SEC EDGAR, 거래소 공시)를 직접 확인하시기 바랍니다.</li>
       </ul>
-      <h3>AI 분석의 한계</h3>
+      <h3>StockLens Intelligence 분석의 한계</h3>
       <ul>
-        <li>AI(Claude)가 제공하는 분석은 과거 데이터 기반의 패턴 인식 결과이며, 미래 주가·수익률을 예측하거나 보증하지 않습니다.</li>
-        <li>AI 분석 결과에는 오류, 누락, 편향이 포함될 수 있으며, 이를 유일한 투자 근거로 활용하는 것은 금지됩니다.</li>
-        <li>AI가 생성한 텍스트는 정보 전달 목적이며, 법적 효력이 있는 금융 조언이 아닙니다.</li>
+        <li>StockLens Intelligence가 제공하는 분석은 과거 데이터 기반의 패턴 인식 결과이며, 미래 주가·수익률을 예측하거나 보증하지 않습니다.</li>
+        <li>분석 결과에는 오류, 누락, 편향이 포함될 수 있으며, 이를 유일한 투자 근거로 활용하는 것은 금지됩니다.</li>
+        <li>생성된 분석 텍스트는 정보 전달 목적이며, 법적 효력이 있는 금융 조언이 아닙니다.</li>
       </ul>
       <h3>금지 표현 자동 필터링</h3>
-      <p>본 서비스의 AI 분석 기능은 자본시장법 준수를 위해 매수(buy), 매도(sell), 추천(recommend), 투자 권유(invest) 등의 표현을 서버 측에서 자동 필터링합니다. 서비스 내 모든 분석 표현은 객관적 데이터 서술에 한정됩니다.</p>
+      <p>본 서비스의 Intelligence 분석 기능은 자본시장법 준수를 위해 매수(buy), 매도(sell), 추천(recommend), 투자 권유(invest) 등의 표현을 서버 측에서 자동 필터링합니다. 서비스 내 모든 분석 표현은 객관적 데이터 서술에 한정됩니다.</p>
       <h3>원금 손실 위험 고지</h3>
       <p>미국 주식 투자는 원금 손실의 위험을 수반하며, 투자 결과에 대한 모든 책임은 이용자 본인에게 있습니다. moodilab은 이용자의 투자 결과에 대해 어떠한 법적·경제적 책임도 지지 않습니다.</p>
     </div>
@@ -852,7 +867,7 @@
         <li><strong>Railway (미국)</strong> — 서버 호스팅, 데이터베이스(PostgreSQL), 캐시(Redis) 운영. 위탁 목적: 서비스 인프라 운영</li>
         <li><strong>Toss Payments (한국)</strong> — 웹 결제 처리. 위탁 목적: 구독 결제 및 환불 처리</li>
         <li><strong>Apple Inc. (미국)</strong> — App Store 인앱 결제 처리. 위탁 목적: iOS 앱 내 구독 결제</li>
-        <li><strong>Anthropic PBC (미국)</strong> — AI 분석 API 처리. 위탁 목적: 종목 데이터 기반 AI 분석 생성. <em>전송 데이터: 종목 재무 수치·뉴스 헤드라인 등 공개 시장 데이터만 전송. 이메일 등 개인 식별 정보는 일절 전송되지 않습니다.</em></li>
+        <li><strong>Anthropic PBC (미국)</strong> — Intelligence 분석 엔진 처리. 위탁 목적: 종목 데이터 기반 분석 생성. <em>전송 데이터: 종목 재무 수치·뉴스 헤드라인 등 공개 시장 데이터만 전송. 이메일 등 개인 식별 정보는 일절 전송되지 않습니다.</em></li>
         <li><strong>Financial Modeling Prep (미국)</strong> — 재무 데이터 API. 위탁 목적: 종목 재무제표·주가 데이터 조회</li>
         <li><strong>Finnhub (미국)</strong> — 뉴스·감성 데이터 API. 위탁 목적: 시장 뉴스 및 감성 지수 조회</li>
       </ul>
