@@ -276,19 +276,53 @@
 
     /* ── 플랜 비교 ── */
     #plans {}
-    .plans-note {
+    .billing-toggle {
+      display: inline-flex;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 40px;
+    }
+    .billing-btn {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: rgba(245,166,35,0.12);
-      border: 1px solid rgba(245,166,35,0.3);
-      border-radius: 100px;
-      padding: 8px 18px;
+      padding: 9px 24px;
+      border-radius: 9px;
       font-size: 14px;
-      font-weight: 700;
-      color: var(--gold);
-      margin-bottom: 48px;
+      font-weight: 600;
+      color: var(--grey);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: background .2s, color .2s;
     }
+    .billing-btn.active {
+      background: var(--blue);
+      color: var(--white);
+    }
+    .billing-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 100px;
+      background: rgba(0,200,83,0.2);
+      color: var(--green);
+    }
+    .billing-btn.active .billing-badge {
+      background: rgba(255,255,255,0.18);
+      color: #fff;
+    }
+    .plan-annual-equiv {
+      font-size: 12px;
+      color: var(--green);
+      margin-top: 2px;
+      display: none;
+    }
+    .annual-mode .plan-annual-equiv { display: block; }
+    .annual-mode .plan-monthly-text { display: none; }
+    .plan-monthly-text { display: block; }
     .plans-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -642,11 +676,18 @@
   <div class="container">
     <span class="section-label">요금제</span>
     <h2 class="section-title">합리적인 가격,<br/>타협 없는 데이터</h2>
-    <div class="plans-note">
-      ⚡ 웹에서 구독 시 앱보다 30% 저렴 — 아래 버튼으로 구독 가능
+
+    <!-- 월간 / 연간 토글 -->
+    <div style="text-align:center;">
+      <div class="billing-toggle" id="billingToggle">
+        <button class="billing-btn active" onclick="setBilling('monthly')" id="btn-monthly">월간</button>
+        <button class="billing-btn" onclick="setBilling('annual')" id="btn-annual">
+          연간 <span class="billing-badge">10% 할인</span>
+        </button>
+      </div>
     </div>
 
-    <div class="plans-grid">
+    <div class="plans-grid" id="plansGrid">
       <!-- Free -->
       <div class="plan-card">
         <div class="plan-name">Free</div>
@@ -669,10 +710,16 @@
       <!-- Analyst -->
       <div class="plan-card">
         <div class="plan-name">Analyst</div>
-        <div class="plan-price">₩99,000</div>
-        <div class="plan-period">/ 월 &nbsp;·&nbsp; <span style="color:var(--red)">웹 구독이 더 저렴해요</span></div>
-        <div class="plan-app-price">앱 내 구독 시 ₩129,000/월</div>
-        <ul class="plan-features">
+        <div class="plan-price">
+          <span class="price-monthly">₩99,000</span>
+          <span class="price-annual" style="display:none">₩1,069,200</span>
+        </div>
+        <div class="plan-period">
+          <span class="period-monthly">/ 월 &nbsp;<small style="font-size:11px;color:var(--grey)">(부가세 포함)</small></span>
+          <span class="period-annual" style="display:none">/ 년 &nbsp;<small style="font-size:11px;color:var(--grey)">(부가세 포함)</small></span>
+        </div>
+        <div class="plan-annual-equiv">월 89,100원 상당</div>
+        <ul class="plan-features" style="margin-top:12px;">
           <li class="active"><span class="check">✓</span> 종목 검색 20회/일</li>
           <li class="active"><span class="check">✓</span> 주가 + 차트 (3년)</li>
           <li class="active"><span class="check">✓</span> 재무제표 3년치</li>
@@ -692,10 +739,16 @@
       <div class="plan-card featured">
         <div class="plan-badge">가장 인기</div>
         <div class="plan-name">Oracle</div>
-        <div class="plan-price">₩149,000</div>
-        <div class="plan-period">/ 월 &nbsp;·&nbsp; <span style="color:var(--gold)">웹 구독이 더 저렴해요</span></div>
-        <div class="plan-app-price">앱 내 구독 시 ₩199,000/월</div>
-        <ul class="plan-features">
+        <div class="plan-price">
+          <span class="price-monthly">₩149,000</span>
+          <span class="price-annual" style="display:none">₩1,609,200</span>
+        </div>
+        <div class="plan-period">
+          <span class="period-monthly">/ 월 &nbsp;<small style="font-size:11px;opacity:0.6">(부가세 포함)</small></span>
+          <span class="period-annual" style="display:none">/ 년 &nbsp;<small style="font-size:11px;opacity:0.6">(부가세 포함)</small></span>
+        </div>
+        <div class="plan-annual-equiv">월 134,100원 상당</div>
+        <ul class="plan-features" style="margin-top:12px;">
           <li class="active"><span class="check">✓</span> Analyst 모든 기능 포함</li>
           <li class="active"><span class="check">✓</span> 무제한 검색</li>
           <li class="active"><span class="check">✓</span> 주가 + 차트 (5년) · 재무제표 5년치</li>
@@ -717,16 +770,26 @@
     <!-- 정기결제 상품 안내 -->
     <div style="margin-top:40px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius);padding:28px 32px;">
       <div style="font-size:13px;font-weight:700;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;">정기결제 상품 안내</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:20px;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:20px;">
         <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;padding:16px 20px;">
-          <div style="font-size:12px;font-weight:700;color:var(--grey);text-transform:uppercase;margin-bottom:6px;">Analyst 플랜</div>
-          <div style="font-size:22px;font-weight:900;margin-bottom:2px;">₩99,000<span style="font-size:13px;font-weight:400;color:var(--grey)">/월</span></div>
-          <div style="font-size:12px;color:var(--grey);">월 1회 정기결제 · 1개월 단위 자동갱신</div>
+          <div style="font-size:11px;font-weight:700;color:var(--grey);text-transform:uppercase;margin-bottom:6px;">Analyst · 월간</div>
+          <div style="font-size:20px;font-weight:900;margin-bottom:2px;">₩99,000<span style="font-size:12px;font-weight:400;color:var(--grey)">/월</span></div>
+          <div style="font-size:12px;color:var(--grey);">월 1회 정기결제 · 1개월 자동갱신 · 부가세 포함</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;padding:16px 20px;">
+          <div style="font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;margin-bottom:6px;">Analyst · 연간 <span style="color:var(--green);font-size:10px;">10% 할인</span></div>
+          <div style="font-size:20px;font-weight:900;margin-bottom:2px;">₩1,069,200<span style="font-size:12px;font-weight:400;color:var(--grey)">/년</span></div>
+          <div style="font-size:12px;color:var(--grey);">연 1회 정기결제 · 1년 단위 자동갱신 · 부가세 포함</div>
         </div>
         <div style="background:rgba(24,95,165,0.12);border:1px solid rgba(24,95,165,0.4);border-radius:12px;padding:16px 20px;">
-          <div style="font-size:12px;font-weight:700;color:var(--grey);text-transform:uppercase;margin-bottom:6px;">Oracle 플랜</div>
-          <div style="font-size:22px;font-weight:900;margin-bottom:2px;">₩149,000<span style="font-size:13px;font-weight:400;color:var(--grey)">/월</span></div>
-          <div style="font-size:12px;color:var(--grey);">월 1회 정기결제 · 1개월 단위 자동갱신</div>
+          <div style="font-size:11px;font-weight:700;color:var(--grey);text-transform:uppercase;margin-bottom:6px;">Oracle · 월간</div>
+          <div style="font-size:20px;font-weight:900;margin-bottom:2px;">₩149,000<span style="font-size:12px;font-weight:400;color:var(--grey)">/월</span></div>
+          <div style="font-size:12px;color:var(--grey);">월 1회 정기결제 · 1개월 자동갱신 · 부가세 포함</div>
+        </div>
+        <div style="background:rgba(24,95,165,0.18);border:1px solid rgba(24,95,165,0.5);border-radius:12px;padding:16px 20px;">
+          <div style="font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;margin-bottom:6px;">Oracle · 연간 <span style="color:var(--green);font-size:10px;">10% 할인</span></div>
+          <div style="font-size:20px;font-weight:900;margin-bottom:2px;">₩1,609,200<span style="font-size:12px;font-weight:400;color:var(--grey)">/년</span></div>
+          <div style="font-size:12px;color:var(--grey);">연 1회 정기결제 · 1년 단위 자동갱신 · 부가세 포함</div>
         </div>
       </div>
       <ul style="list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:10px;">
@@ -942,15 +1005,21 @@
 
       <h3>구독 취소</h3>
       <ul>
-        <li>유료 구독(Analyst, Oracle)은 언제든지 취소 가능합니다.</li>
-        <li>취소 후에는 현재 구독 기간 종료일(다음 결제 예정일)까지 서비스를 계속 이용하실 수 있습니다.</li>
+        <li>유료 구독(Analyst, Oracle — 월간/연간)은 언제든지 취소 가능합니다.</li>
+        <li>취소 후에는 현재 구독 기간 종료일까지 서비스를 계속 이용하실 수 있습니다.</li>
         <li>구독 기간 종료 후 자동으로 무료(Free) 플랜으로 전환됩니다.</li>
         <li>취소 신청 방법: 앱 내 '내 정보' → 구독 관리 또는 이메일(mdlab@moodilab.kr) 문의</li>
       </ul>
 
       <h3>환불 정책</h3>
       <ul>
-        <li>이미 결제된 월 구독료는 원칙적으로 환불되지 않습니다.</li>
+        <li><strong>월간 구독:</strong> 이미 결제된 월 구독료는 원칙적으로 환불되지 않습니다.</li>
+        <li><strong>연간 구독 취소 환불:</strong> 연간 구독을 중도 해지하는 경우, 이미 사용한 개월 수를 월정가(할인 미적용 정상가) 기준으로 계산한 금액을 제외한 잔여 금액을 환불합니다.
+          <ul style="margin-top:6px;">
+            <li>예: Oracle 연간(₩1,609,200) 구독 후 3개월 사용 → 정상 월정가(₩149,000 × 3개월 = ₩447,000) 차감 후 잔액 환불</li>
+            <li>연간 할인 혜택은 12개월 전체 이용 완료 시 적용되며, 중도 해지 시 정상가 기준으로 정산됩니다.</li>
+          </ul>
+        </li>
         <li><strong>예외 — 서비스 장애:</strong> 회사의 귀책 사유로 인해 서비스가 48시간 이상 연속 중단된 경우, 해당 기간에 비례한 환불 또는 서비스 연장을 고객센터를 통해 협의합니다.</li>
         <li>앱 내(App Store) 구독의 환불은 Apple 환불 정책에 따르며, 회사가 직접 처리하지 않습니다. Apple 고객지원(support.apple.com)을 통해 요청하시기 바랍니다.</li>
         <li>웹 결제(토스페이먼츠) 환불 문의는 고객센터로 연락해 주세요.</li>
@@ -958,10 +1027,9 @@
 
       <h3>정기결제 안내</h3>
       <ul>
-        <li>결제 주기: 월 1회 자동 결제</li>
-        <li>서비스 제공 기간: 결제일로부터 1개월 (30일) 단위 자동갱신</li>
+        <li><strong>월간:</strong> 월 1회 자동 결제 · 1개월 단위 자동갱신 · 다음 결제 24시간 전까지 취소 가능</li>
+        <li><strong>연간:</strong> 연 1회 자동 결제 · 1년 단위 자동갱신 · 다음 결제 24시간 전까지 취소 가능</li>
         <li>결제 즉시 서비스가 제공됩니다.</li>
-        <li>다음 결제 24시간 전까지 취소하지 않으면 자동으로 갱신됩니다.</li>
       </ul>
 
       <h3>고객센터</h3>
@@ -1106,5 +1174,25 @@
   </div>
 </footer>
 
+<script>
+  function setBilling(period) {
+    const isAnnual = period === 'annual';
+
+    // 버튼 active 상태
+    document.getElementById('btn-monthly').classList.toggle('active', !isAnnual);
+    document.getElementById('btn-annual').classList.toggle('active', isAnnual);
+
+    // 가격 텍스트 전환
+    document.querySelectorAll('.price-monthly').forEach(el => el.style.display = isAnnual ? 'none' : '');
+    document.querySelectorAll('.price-annual').forEach(el => el.style.display = isAnnual ? '' : 'none');
+    document.querySelectorAll('.period-monthly').forEach(el => el.style.display = isAnnual ? 'none' : '');
+    document.querySelectorAll('.period-annual').forEach(el => el.style.display = isAnnual ? '' : 'none');
+
+    // 월 상당액 (연간 선택 시만 표시)
+    document.querySelectorAll('.plan-annual-equiv').forEach(el => {
+      el.style.display = isAnnual ? 'block' : 'none';
+    });
+  }
+</script>
 </body>
 </html>
