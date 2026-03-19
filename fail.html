@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>결제 수단 등록 실패 — StockLens</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #042C53;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 48px 40px;
+      max-width: 480px;
+      width: 90%;
+      text-align: center;
+    }
+    .icon {
+      font-size: 52px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+    p {
+      font-size: 14px;
+      color: #A0B4C8;
+      line-height: 1.7;
+      margin-bottom: 8px;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(255,59,48,0.2);
+      color: #FF3B30;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+    }
+    .error-box {
+      background: rgba(255,59,48,0.08);
+      border: 1px solid rgba(255,59,48,0.2);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin: 16px 0;
+      font-size: 12px;
+      color: #FF9190;
+      text-align: left;
+      display: none;
+    }
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 28px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-block;
+      padding: 13px 28px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background .2s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary { background: #185FA5; color: #fff; }
+    .btn-primary:hover { background: #1e74cc; }
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid rgba(255,255,255,0.2);
+      color: #A0B4C8;
+    }
+    .btn-outline:hover { border-color: rgba(255,255,255,0.4); color: #fff; }
+    .notice {
+      margin-top: 20px;
+      font-size: 11px;
+      color: rgba(160,180,200,0.6);
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">❌</div>
+    <div class="badge">등록 실패</div>
+    <h1>결제 수단 등록에 실패했습니다</h1>
+    <p>카드 등록 중 문제가 발생했습니다.<br/>
+    아래 오류 내용을 확인 후 다시 시도해 주세요.</p>
+
+    <div class="error-box" id="error-box">
+      <strong>오류 코드:</strong> <span id="error-code">-</span><br/>
+      <strong>오류 메시지:</strong> <span id="error-message">-</span>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="history.back()">다시 시도</button>
+      <a href="/" class="btn btn-outline">홈으로</a>
+    </div>
+    <p class="notice">본 결제창은 카드사 심사를 위한 테스트 환경입니다.<br/>실제 결제가 발생하지 않습니다.</p>
+  </div>
+
+  <script>
+    // 토스페이먼츠가 리다이렉트 시 오류 코드/메시지 전달
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    const message = params.get('message');
+
+    if (code || message) {
+      document.getElementById('error-box').style.display = 'block';
+      if (code)    document.getElementById('error-code').textContent = code;
+      if (message) document.getElementById('error-message').textContent = message;
+    }
+  </script>
+</body>
+</html>

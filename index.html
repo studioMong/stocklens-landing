@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="기관급 미국 주식 심층 분석 앱. Bloomberg Terminal의 1/20 가격으로 SEC 내부자거래, 다각도 교차분석, 기관투자자 동향을 실시간으로 파악하세요." />
   <title>StockLens — 기관급 데이터를 내 손안에</title>
+  <script src="https://js.tosspayments.com/v1"></script>
   <style>
     /* ── 변수 ── */
     :root {
@@ -385,12 +386,16 @@
     .plan-features .lock { color: var(--gold); flex-shrink: 0; margin-top: 2px; }
     .plan-cta {
       display: block;
+      width: 100%;
       text-align: center;
       padding: 13px;
       border-radius: 12px;
       font-size: 15px;
       font-weight: 700;
       transition: background .2s, transform .2s;
+      cursor: pointer;
+      border: none;
+      outline: none;
     }
     .plan-cta.primary { background: var(--blue); color: var(--white); }
     .plan-cta.primary:hover { background: var(--blue2); transform: translateY(-1px); }
@@ -732,7 +737,7 @@
           <li><span class="lock">🔒</span> 기관 지분 변동 13F (Oracle 전용)</li>
           <li><span class="lock">🔒</span> 실시간 변경사항 자동 감지 (Oracle 전용)</li>
         </ul>
-        <a href="#" class="plan-cta outline">Analyst 시작하기</a>
+        <button class="plan-cta outline" onclick="startBilling('analyst')">Analyst 시작하기</button>
       </div>
 
       <!-- Oracle -->
@@ -761,7 +766,7 @@
           <li class="active"><span class="check">✓</span> 변경 히스토리 30일 보관</li>
           <li class="active"><span class="check">✓</span> 만료 전 푸시 알림 · 재분석 무제한</li>
         </ul>
-        <a href="#" class="plan-cta primary">Oracle 시작하기</a>
+        <button class="plan-cta primary" onclick="startBilling('oracle')">Oracle 시작하기</button>
       </div>
     </div>
 
@@ -1175,6 +1180,37 @@
 </footer>
 
 <script>
+  /* ── 토스페이먼츠 빌링(정기결제) 결제창 ── */
+  const TOSS_CLIENT_KEY = 'test_ck_d46qopOB892Mo65qEN073ZmM75y0';
+
+  function startBilling(plan) {
+    const tossPayments = TossPayments(TOSS_CLIENT_KEY);
+
+    // 연간/월간 선택 여부 감지
+    const isAnnual = document.getElementById('btn-annual').classList.contains('active');
+    const billingPeriod = isAnnual ? 'annual' : 'monthly';
+
+    // 플랜별 주문명 설정
+    const planLabel = {
+      analyst: isAnnual ? 'StockLens Analyst 연간 구독' : 'StockLens Analyst 월간 구독',
+      oracle:  isAnnual ? 'StockLens Oracle 연간 구독'  : 'StockLens Oracle 월간 구독',
+    }[plan];
+
+    const baseUrl = window.location.origin;
+
+    tossPayments.requestBillingAuth('카드', {
+      customerKey:  'test-customer-' + plan + '-' + billingPeriod,
+      successUrl:   baseUrl + '/success.html?plan=' + plan + '&period=' + billingPeriod,
+      failUrl:      baseUrl + '/fail.html?plan=' + plan,
+    }).catch(function(error) {
+      // 사용자가 직접 닫은 경우(ABORT) 무시, 그 외 오류만 표시
+      if (error.code !== 'USER_CANCEL' && error.code !== 'PAY_PROCESS_CANCELED') {
+        alert('결제창 오류가 발생했습니다: ' + (error.message || error.code));
+      }
+    });
+  }
+
+  /* ── 월간/연간 전환 ── */
   function setBilling(period) {
     const isAnnual = period === 'annual';
 

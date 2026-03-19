@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>결제 수단 등록 완료 — StockLens</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #042C53;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 48px 40px;
+      max-width: 480px;
+      width: 90%;
+      text-align: center;
+    }
+    .icon {
+      font-size: 52px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+    p {
+      font-size: 14px;
+      color: #A0B4C8;
+      line-height: 1.7;
+      margin-bottom: 8px;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(33,150,243,0.2);
+      color: #2196F3;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+    }
+    .btn {
+      display: inline-block;
+      margin-top: 28px;
+      padding: 13px 32px;
+      background: #185FA5;
+      color: #fff;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background .2s;
+    }
+    .btn:hover { background: #1e74cc; }
+    .notice {
+      margin-top: 20px;
+      font-size: 11px;
+      color: rgba(160,180,200,0.6);
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">✅</div>
+    <div class="badge" id="plan-badge">테스트 환경</div>
+    <h1>결제 수단 등록이 완료되었습니다</h1>
+    <p>카드 정보가 성공적으로 등록되었습니다.<br/>
+    앱 출시 후 선택하신 플랜으로 자동 연결됩니다.</p>
+    <p id="auth-code-info" style="display:none;margin-top:8px;font-size:12px;"></p>
+    <a href="/" class="btn">홈으로 돌아가기</a>
+    <p class="notice">본 결제창은 카드사 심사를 위한 테스트 환경입니다.<br/>실제 결제가 발생하지 않습니다.</p>
+  </div>
+
+  <script>
+    // URL 파라미터 파싱
+    const params = new URLSearchParams(window.location.search);
+    const plan = params.get('plan') || '';
+    const period = params.get('period') || '';
+    const authKey = params.get('authKey') || '';
+    const customerKey = params.get('customerKey') || '';
+
+    // 플랜 배지 업데이트
+    const planNames = { analyst: 'Analyst', oracle: 'Oracle' };
+    const periodNames = { monthly: '월간', annual: '연간' };
+    const planLabel = planNames[plan] || '';
+    const periodLabel = periodNames[period] || '';
+    if (planLabel) {
+      document.getElementById('plan-badge').textContent =
+        planLabel + (periodLabel ? ' · ' + periodLabel : '') + ' · 테스트';
+    }
+
+    // authKey 표시 (토스페이먼츠가 리다이렉트 시 전달)
+    if (authKey) {
+      const el = document.getElementById('auth-code-info');
+      el.style.display = 'block';
+      el.textContent = 'authKey: ' + authKey;
+    }
+  </script>
+</body>
+</html>
