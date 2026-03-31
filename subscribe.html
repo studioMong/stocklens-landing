@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="StockLens 구독 플랜 — Starter(무료), Analyst(₩9,900/월), Oracle(₩19,900/월)." />
+  <meta name="description" content="StockLens 구독 플랜 — Starter(₩22,000/월), Analyst(₩66,000/월), Oracle(₩165,000/월). 모든 플랜 동일 데이터 접근." />
   <title>StockLens — 구독 플랜 선택</title>
   <script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
   <style>
@@ -411,34 +411,35 @@
       <!-- Starter -->
       <div class="plan-card">
         <div class="plan-name">Starter</div>
-        <div class="plan-price">무료</div>
-        <div class="plan-period">기본 플랜</div>
-        <div class="plan-annual-note">&nbsp;</div>
+        <div>
+          <span class="plan-price" id="starter-price">₩22,000</span>
+          <span class="plan-price-unit"> /월</span>
+        </div>
+        <div class="plan-period" id="starter-period">월간 정기결제 · 부가세 포함</div>
+        <div class="plan-annual-note" id="starter-annual-note">&nbsp;</div>
         <ul class="plan-features">
-          <li><span class="check">✓</span> 검색 10회 / 일</li>
-          <li><span class="check">✓</span> 추적 종목 1개</li>
+          <li><span class="check">✓</span> 모든 데이터 접근 (기관·내부자·공매도 등)</li>
           <li><span class="check">✓</span> AI 종합 분석</li>
-          <li><span class="check">✓</span> 재무제표 · 뉴스 · 주가 데이터</li>
+          <li><span class="check">✓</span> 검색 7회 / 일</li>
+          <li><span class="check">✓</span> 추적 종목 1개</li>
         </ul>
-        <button class="plan-cta outline" onclick="handleSubscribe('starter')">구독하기</button>
+        <button class="plan-cta outline" id="btn-starter" onclick="handleSubscribe('starter')">구독하기</button>
       </div>
 
       <!-- Analyst -->
       <div class="plan-card">
         <div class="plan-name">Analyst</div>
         <div>
-          <span class="plan-price" id="analyst-price">₩9,900</span>
+          <span class="plan-price" id="analyst-price">₩66,000</span>
           <span class="plan-price-unit"> /월</span>
         </div>
         <div class="plan-period" id="analyst-period">월간 정기결제 · 부가세 포함</div>
         <div class="plan-annual-note" id="analyst-annual-note">&nbsp;</div>
         <ul class="plan-features">
-          <li><span class="check">✓</span> 검색 30회 / 일</li>
-          <li><span class="check">✓</span> 추적 종목 3개</li>
+          <li><span class="check">✓</span> 모든 데이터 접근 (기관·내부자·공매도 등)</li>
           <li><span class="check">✓</span> AI 종합 분석</li>
-          <li><span class="star">★</span> 내부자거래 · 공매도 데이터</li>
-          <li><span class="star">★</span> 감성분석 · 시장 심리 지수</li>
-          <li><span class="star">★</span> 경제지표 캘린더</li>
+          <li><span class="check">✓</span> 검색 20회 / 일</li>
+          <li><span class="check">✓</span> 추적 종목 3개</li>
         </ul>
         <button class="plan-cta outline" id="btn-analyst" onclick="handleSubscribe('analyst')">구독하기</button>
       </div>
@@ -448,18 +449,16 @@
         <div class="plan-popular">가장 인기</div>
         <div class="plan-name">Oracle</div>
         <div>
-          <span class="plan-price" id="oracle-price">₩19,900</span>
+          <span class="plan-price" id="oracle-price">₩165,000</span>
           <span class="plan-price-unit"> /월</span>
         </div>
         <div class="plan-period" id="oracle-period">월간 정기결제 · 부가세 포함</div>
         <div class="plan-annual-note" id="oracle-annual-note">&nbsp;</div>
         <ul class="plan-features">
+          <li><span class="check">✓</span> 모든 데이터 접근 (기관·내부자·공매도 등)</li>
+          <li><span class="check">✓</span> AI 종합 분석</li>
           <li><span class="check">✓</span> 무제한 검색</li>
           <li><span class="check">✓</span> 추적 종목 10개</li>
-          <li><span class="check">✓</span> 실시간 AI 분석 히스토리</li>
-          <li><span class="star">★</span> 기관투자자 포지션 (SEC 13F)</li>
-          <li><span class="star">★</span> 의회 거래 내역</li>
-          <li><span class="star">★</span> 대주주 변동 (SEC 13D/13G)</li>
         </ul>
         <button class="plan-cta primary" id="btn-oracle" onclick="handleSubscribe('oracle')">구독하기</button>
       </div>
@@ -575,15 +574,20 @@
   const BACKEND_URL = 'https://stocklens-production-3724.up.railway.app';
 
   const PLANS = {
+    starter: {
+      name: 'Starter',
+      monthly: { amount: 22000,   label: 'StockLens Starter 월간 구독' },
+      annual:  { amount: 211200,  label: 'StockLens Starter 연간 구독' },
+    },
     analyst: {
       name: 'Analyst',
-      monthly: { amount: 9900,   label: 'StockLens Analyst 월간 구독' },
-      annual:  { amount: 95040,  label: 'StockLens Analyst 연간 구독' },
+      monthly: { amount: 66000,   label: 'StockLens Analyst 월간 구독' },
+      annual:  { amount: 633600,  label: 'StockLens Analyst 연간 구독' },
     },
     oracle: {
       name: 'Oracle',
-      monthly: { amount: 19900,  label: 'StockLens Oracle 월간 구독' },
-      annual:  { amount: 191040, label: 'StockLens Oracle 연간 구독' },
+      monthly: { amount: 165000,  label: 'StockLens Oracle 월간 구독' },
+      annual:  { amount: 1584000, label: 'StockLens Oracle 연간 구독' },
     },
   };
 
@@ -631,13 +635,7 @@
       return;
     }
 
-    // Starter (무료) → 내 정보 페이지로 이동
-    if (plan === 'starter') {
-      window.location.href = 'mypage.html';
-      return;
-    }
-
-    // 유료 플랜 → 포트원 결제
+    // 포트원 결제
     await startPayment(plan, token);
   }
 
@@ -650,19 +648,25 @@
     if (period === 'annual') {
       btnA.classList.add('active');
       btnM.classList.remove('active');
-      document.getElementById('analyst-price').textContent = '₩95,040';
+      document.getElementById('starter-price').textContent = '₩211,200';
+      document.getElementById('starter-period').textContent = '연간 정기결제 · 부가세 포함';
+      document.getElementById('starter-annual-note').textContent = '월 17,600원 상당 (20% 할인)';
+      document.getElementById('analyst-price').textContent = '₩633,600';
       document.getElementById('analyst-period').textContent = '연간 정기결제 · 부가세 포함';
-      document.getElementById('analyst-annual-note').textContent = '월 7,920원 상당 (20% 할인)';
-      document.getElementById('oracle-price').textContent = '₩191,040';
+      document.getElementById('analyst-annual-note').textContent = '월 52,800원 상당 (20% 할인)';
+      document.getElementById('oracle-price').textContent = '₩1,584,000';
       document.getElementById('oracle-period').textContent = '연간 정기결제 · 부가세 포함';
-      document.getElementById('oracle-annual-note').textContent = '월 15,920원 상당 (20% 할인)';
+      document.getElementById('oracle-annual-note').textContent = '월 132,000원 상당 (20% 할인)';
     } else {
       btnM.classList.add('active');
       btnA.classList.remove('active');
-      document.getElementById('analyst-price').textContent = '₩9,900';
+      document.getElementById('starter-price').textContent = '₩22,000';
+      document.getElementById('starter-period').textContent = '월간 정기결제 · 부가세 포함';
+      document.getElementById('starter-annual-note').textContent = '\u00a0';
+      document.getElementById('analyst-price').textContent = '₩66,000';
       document.getElementById('analyst-period').textContent = '월간 정기결제 · 부가세 포함';
       document.getElementById('analyst-annual-note').textContent = '\u00a0';
-      document.getElementById('oracle-price').textContent = '₩19,900';
+      document.getElementById('oracle-price').textContent = '₩165,000';
       document.getElementById('oracle-period').textContent = '월간 정기결제 · 부가세 포함';
       document.getElementById('oracle-annual-note').textContent = '\u00a0';
     }
@@ -679,7 +683,7 @@
   /* ── 결제 로딩 ── */
   function setLoading(show) {
     document.getElementById('pay-overlay').className = show ? 'show' : '';
-    ['btn-analyst', 'btn-oracle'].forEach(id => {
+    ['btn-starter', 'btn-analyst', 'btn-oracle'].forEach(id => {
       const btn = document.getElementById(id);
       if (btn) btn.disabled = show;
     });

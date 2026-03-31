@@ -710,14 +710,14 @@
       <!-- Starter -->
       <div class="plan-card">
         <div class="plan-name">Starter</div>
-        <div class="plan-price">무료</div>
-        <div class="plan-period">기본 플랜</div>
-        <div class="plan-annual-equiv">&nbsp;</div>
+        <div class="plan-price" id="idx-starter-price">₩22,000<span style="font-size:14px;font-weight:400;color:var(--grey)"> /월</span></div>
+        <div class="plan-period" id="idx-starter-period">월간 정기결제 · 부가세 포함</div>
+        <div class="plan-annual-equiv" id="idx-starter-equiv">&nbsp;</div>
         <ul class="plan-features" style="margin-top:12px;">
-          <li class="active"><span class="check">✓</span> 검색 10회 / 일</li>
-          <li class="active"><span class="check">✓</span> 추적 종목 1개</li>
+          <li class="active"><span class="check">✓</span> 모든 데이터 접근 (기관·내부자·공매도 등)</li>
           <li class="active"><span class="check">✓</span> AI 종합 분석</li>
-          <li class="active"><span class="check">✓</span> 재무제표 · 뉴스 · 주가 데이터</li>
+          <li class="active"><span class="check">✓</span> 검색 7회 / 일</li>
+          <li class="active"><span class="check">✓</span> 추적 종목 1개</li>
         </ul>
         <a href="subscribe.html?plan=starter" class="plan-cta outline">구독하기</a>
       </div>
@@ -725,15 +725,14 @@
       <!-- Analyst -->
       <div class="plan-card">
         <div class="plan-name">Analyst</div>
-        <div class="plan-price" id="idx-analyst-price">₩9,900<span style="font-size:14px;font-weight:400;color:var(--grey)"> /월</span></div>
+        <div class="plan-price" id="idx-analyst-price">₩66,000<span style="font-size:14px;font-weight:400;color:var(--grey)"> /월</span></div>
         <div class="plan-period" id="idx-analyst-period">월간 정기결제 · 부가세 포함</div>
         <div class="plan-annual-equiv" id="idx-analyst-equiv">&nbsp;</div>
         <ul class="plan-features" style="margin-top:12px;">
-          <li class="active"><span class="check">✓</span> 검색 30회 / 일</li>
-          <li class="active"><span class="check">✓</span> 추적 종목 3개</li>
+          <li class="active"><span class="check">✓</span> 모든 데이터 접근 (기관·내부자·공매도 등)</li>
           <li class="active"><span class="check">✓</span> AI 종합 분석</li>
-          <li class="active"><span class="lock">★</span> 내부자거래 · 공매도 데이터</li>
-          <li class="active"><span class="lock">★</span> 감성분석 · 시장 심리 지수</li>
+          <li class="active"><span class="check">✓</span> 검색 20회 / 일</li>
+          <li class="active"><span class="check">✓</span> 추적 종목 3개</li>
         </ul>
         <a href="subscribe.html?plan=analyst" class="plan-cta outline">구독하기</a>
       </div>
@@ -742,15 +741,14 @@
       <div class="plan-card featured">
         <div class="plan-badge">가장 인기</div>
         <div class="plan-name">Oracle</div>
-        <div class="plan-price" id="idx-oracle-price">₩19,900<span style="font-size:14px;font-weight:400;color:var(--grey)"> /월</span></div>
+        <div class="plan-price" id="idx-oracle-price">₩165,000<span style="font-size:14px;font-weight:400;color:var(--grey)"> /월</span></div>
         <div class="plan-period" id="idx-oracle-period">월간 정기결제 · 부가세 포함</div>
         <div class="plan-annual-equiv" id="idx-oracle-equiv">&nbsp;</div>
         <ul class="plan-features" style="margin-top:12px;">
+          <li class="active"><span class="check">✓</span> 모든 데이터 접근 (기관·내부자·공매도 등)</li>
+          <li class="active"><span class="check">✓</span> AI 종합 분석</li>
           <li class="active"><span class="check">✓</span> 무제한 검색</li>
           <li class="active"><span class="check">✓</span> 추적 종목 10개</li>
-          <li class="active"><span class="check">✓</span> 실시간 AI 분석 히스토리</li>
-          <li class="active"><span class="lock">★</span> 기관투자자 포지션 (SEC 13F)</li>
-          <li class="active"><span class="lock">★</span> 의회 거래 · 대주주 데이터</li>
         </ul>
         <a href="subscribe.html?plan=oracle" class="plan-cta primary">구독하기</a>
       </div>
@@ -1162,19 +1160,25 @@
     if (period === 'annual') {
       btnAnnual.classList.add('active');
       btnMonthly.classList.remove('active');
-      document.getElementById('idx-analyst-price').innerHTML = '₩95,040<span style="font-size:14px;font-weight:400;color:var(--grey)"> /년</span>';
+      document.getElementById('idx-starter-price').innerHTML = '₩211,200<span style="font-size:14px;font-weight:400;color:var(--grey)"> /년</span>';
+      document.getElementById('idx-starter-period').textContent = '연간 정기결제 · 부가세 포함';
+      document.getElementById('idx-starter-equiv').textContent = '월 17,600원 상당 (20% 할인)';
+      document.getElementById('idx-analyst-price').innerHTML = '₩633,600<span style="font-size:14px;font-weight:400;color:var(--grey)"> /년</span>';
       document.getElementById('idx-analyst-period').textContent = '연간 정기결제 · 부가세 포함';
-      document.getElementById('idx-analyst-equiv').textContent = '월 7,920원 상당 (20% 할인)';
-      document.getElementById('idx-oracle-price').innerHTML = '₩191,040<span style="font-size:14px;font-weight:400;color:var(--grey)"> /년</span>';
+      document.getElementById('idx-analyst-equiv').textContent = '월 52,800원 상당 (20% 할인)';
+      document.getElementById('idx-oracle-price').innerHTML = '₩1,584,000<span style="font-size:14px;font-weight:400;color:var(--grey)"> /년</span>';
       document.getElementById('idx-oracle-period').textContent = '연간 정기결제 · 부가세 포함';
-      document.getElementById('idx-oracle-equiv').textContent = '월 15,920원 상당 (20% 할인)';
+      document.getElementById('idx-oracle-equiv').textContent = '월 132,000원 상당 (20% 할인)';
     } else {
       btnMonthly.classList.add('active');
       btnAnnual.classList.remove('active');
-      document.getElementById('idx-analyst-price').innerHTML = '₩9,900<span style="font-size:14px;font-weight:400;color:var(--grey)"> /월</span>';
+      document.getElementById('idx-starter-price').innerHTML = '₩22,000<span style="font-size:14px;font-weight:400;color:var(--grey)"> /월</span>';
+      document.getElementById('idx-starter-period').textContent = '월간 정기결제 · 부가세 포함';
+      document.getElementById('idx-starter-equiv').innerHTML = '&nbsp;';
+      document.getElementById('idx-analyst-price').innerHTML = '₩66,000<span style="font-size:14px;font-weight:400;color:var(--grey)"> /월</span>';
       document.getElementById('idx-analyst-period').textContent = '월간 정기결제 · 부가세 포함';
       document.getElementById('idx-analyst-equiv').innerHTML = '&nbsp;';
-      document.getElementById('idx-oracle-price').innerHTML = '₩19,900<span style="font-size:14px;font-weight:400;color:var(--grey)"> /월</span>';
+      document.getElementById('idx-oracle-price').innerHTML = '₩165,000<span style="font-size:14px;font-weight:400;color:var(--grey)"> /월</span>';
       document.getElementById('idx-oracle-period').textContent = '월간 정기결제 · 부가세 포함';
       document.getElementById('idx-oracle-equiv').innerHTML = '&nbsp;';
     }
