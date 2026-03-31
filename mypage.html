@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="StockLens 내 정보" />
+  <title>StockLens — 내 정보</title>
+  <style>
+    :root {
+      --navy:   #042C53;
+      --navy2:  #063660;
+      --blue:   #185FA5;
+      --blue2:  #1e74cc;
+      --accent: #2196F3;
+      --gold:   #F5A623;
+      --green:  #00C853;
+      --red:    #FF3B30;
+      --white:  #FFFFFF;
+      --grey:   #A0B4C8;
+      --card:   rgba(255,255,255,0.05);
+      --border: rgba(255,255,255,0.1);
+      --radius: 16px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── 네비 ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 16px 24px;
+      background: rgba(4,44,83,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
+    .nav-logo span { color: var(--accent); }
+    .nav-back {
+      font-size: 14px;
+      color: var(--grey);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color .2s;
+    }
+    .nav-back:hover { color: var(--white); }
+
+    /* ── 메인 ── */
+    main {
+      flex: 1;
+      max-width: 720px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 48px 24px 80px;
+    }
+
+    /* ── 로딩 ── */
+    #loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 80px 0;
+    }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 4px solid rgba(255,255,255,0.1);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #loading p { font-size: 14px; color: var(--grey); }
+
+    /* ── 콘텐츠 ── */
+    #content { display: none; }
+
+    /* ── 프로필 헤더 ── */
+    .profile-header {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px 28px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .avatar {
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, var(--blue), var(--accent));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+    .profile-info {}
+    .profile-name {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 3px;
+    }
+    .profile-email { font-size: 14px; color: var(--grey); }
+
+    /* ── 섹션 카드 ── */
+    .section-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 16px;
+    }
+    .section-card-title {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    /* ── 현재 플랜 ── */
+    .plan-display {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .plan-badge-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .plan-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    .plan-icon.starter { background: rgba(160,180,200,0.12); }
+    .plan-icon.analyst { background: rgba(33,150,243,0.12); }
+    .plan-icon.oracle  { background: rgba(245,166,35,0.12); }
+
+    .plan-label { font-size: 18px; font-weight: 800; }
+    .plan-desc  { font-size: 13px; color: var(--grey); margin-top: 2px; }
+
+    .btn-upgrade {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 20px;
+      background: var(--blue);
+      color: var(--white);
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background .2s;
+    }
+    .btn-upgrade:hover { background: var(--blue2); }
+
+    /* ── 구독 상세 ── */
+    .subscription-detail {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-label { font-size: 13px; color: var(--grey); }
+    .detail-value { font-size: 13px; font-weight: 600; }
+
+    /* ── 버튼들 ── */
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 18px;
+      background: transparent;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      color: var(--grey);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color .2s, color .2s;
+    }
+    .btn-outline:hover { border-color: rgba(255,255,255,0.35); color: var(--white); }
+    .btn-danger {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 18px;
+      background: transparent;
+      border: 1.5px solid rgba(255,59,48,0.35);
+      border-radius: 10px;
+      color: #FF9090;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+    }
+    .btn-danger:hover { border-color: rgba(255,59,48,0.6); background: rgba(255,59,48,0.08); }
+
+    /* ── 로그아웃 버튼 ── */
+    .btn-logout {
+      width: 100%;
+      padding: 14px;
+      background: transparent;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      color: var(--grey);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: border-color .2s, color .2s;
+    }
+    .btn-logout:hover { border-color: rgba(255,255,255,0.3); color: var(--white); }
+
+    /* ── 해지 모달 ── */
+    #cancel-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(4,44,83,0.88);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    #cancel-modal.show { display: flex; }
+    .modal-card {
+      background: #0c2340;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px 32px;
+      width: 100%;
+      max-width: 400px;
+    }
+    @media (max-width: 480px) {
+      .modal-card { padding: 28px 20px; }
+    }
+    .modal-title { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+    .modal-sub { font-size: 13px; color: var(--grey); line-height: 1.7; margin-bottom: 6px; }
+    .modal-notice {
+      background: rgba(245,166,35,0.1);
+      border: 1px solid rgba(245,166,35,0.25);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: var(--gold);
+      margin-top: 16px;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+    }
+    .btn-modal-cancel {
+      flex: 1;
+      padding: 12px;
+      background: transparent;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      color: var(--grey);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-modal-cancel:hover { border-color: rgba(255,255,255,0.3); color: var(--white); }
+    .btn-modal-confirm {
+      flex: 1;
+      padding: 12px;
+      background: rgba(255,59,48,0.15);
+      border: 1.5px solid rgba(255,59,48,0.4);
+      border-radius: 10px;
+      color: #FF9090;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .btn-modal-confirm:hover { background: rgba(255,59,48,0.25); }
+    .btn-modal-confirm:disabled { opacity: 0.5; cursor: not-allowed; }
+    #cancel-modal-msg {
+      font-size: 13px;
+      margin-top: 12px;
+      text-align: center;
+      min-height: 18px;
+    }
+    #cancel-modal-msg.ok { color: var(--green); }
+    #cancel-modal-msg.err { color: #FF9090; }
+
+    /* ── 토스트 ── */
+    #toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #1a3a5c;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      z-index: 300;
+      transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+    #toast.success { border-color: rgba(0,200,83,0.5); color: var(--green); }
+    #toast.error   { border-color: rgba(255,59,48,0.4); color: #FF9090; }
+
+    /* ── 푸터 ── */
+    footer {
+      padding: 24px;
+      text-align: center;
+      border-top: 1px solid var(--border);
+    }
+    footer p { font-size: 12px; color: var(--grey); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Stock<span>Lens</span></a>
+  <a href="index.html" class="nav-back">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    홈으로
+  </a>
+</nav>
+
+<main>
+  <!-- 로딩 -->
+  <div id="loading">
+    <div class="spinner"></div>
+    <p>정보를 불러오는 중입니다…</p>
+  </div>
+
+  <!-- 콘텐츠 -->
+  <div id="content">
+    <!-- 프로필 헤더 -->
+    <div class="profile-header">
+      <div class="avatar" id="avatar-initial">?</div>
+      <div class="profile-info">
+        <div class="profile-name" id="profile-name">—</div>
+        <div class="profile-email" id="profile-email">—</div>
+      </div>
+    </div>
+
+    <!-- 구독 정보 -->
+    <div class="section-card">
+      <div class="section-card-title">구독 정보</div>
+      <div class="plan-display">
+        <div class="plan-badge-wrap">
+          <div class="plan-icon" id="plan-icon">📊</div>
+          <div>
+            <div class="plan-label" id="plan-label">—</div>
+            <div class="plan-desc" id="plan-desc">—</div>
+          </div>
+        </div>
+        <a href="subscribe.html" class="btn-upgrade" id="btn-upgrade">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          플랜 업그레이드
+        </a>
+      </div>
+
+      <div class="subscription-detail">
+        <div class="detail-row">
+          <span class="detail-label">검색 횟수 / 일</span>
+          <span class="detail-value" id="detail-search">—</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">추적 종목 수</span>
+          <span class="detail-value" id="detail-tracking">—</span>
+        </div>
+      </div>
+
+      <div class="btn-row" id="cancel-btn-row" style="display:none;">
+        <button class="btn-danger" onclick="openCancelModal()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+          구독 해지 신청
+        </button>
+      </div>
+    </div>
+
+    <!-- 로그아웃 -->
+    <div class="section-card">
+      <button class="btn-logout" onclick="handleLogout()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        로그아웃
+      </button>
+    </div>
+  </div>
+</main>
+
+<!-- ── 해지 확인 모달 ── -->
+<div id="cancel-modal">
+  <div class="modal-card">
+    <div class="modal-title">구독 해지 신청</div>
+    <p class="modal-sub">구독을 해지하시겠습니까?</p>
+    <div class="modal-notice">
+      ⚠️ 해지 후에도 현재 구독 기간 만료일까지 서비스를 계속 이용하실 수 있습니다. 다음 결제는 발생하지 않습니다.
+    </div>
+    <div id="cancel-modal-msg"></div>
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" onclick="closeCancelModal()">취소</button>
+      <button class="btn-modal-confirm" id="btn-confirm-cancel" onclick="confirmCancel()">해지 신청</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<footer>
+  <p>© 2026 moodilab. All rights reserved. &nbsp;|&nbsp; 본 서비스는 투자 추천이 아닙니다.</p>
+</footer>
+
+<script>
+  const BACKEND_URL = 'https://stocklens-production-3724.up.railway.app';
+
+  const PLAN_META = {
+    starter: {
+      label: 'Starter',
+      desc:  '기본 플랜',
+      icon:  '📊',
+      cls:   'starter',
+      search: '10회',
+      tracking: '1개',
+    },
+    analyst: {
+      label: 'Analyst',
+      desc:  '₩9,900/월',
+      icon:  '🔬',
+      cls:   'analyst',
+      search: '30회',
+      tracking: '3개',
+    },
+    oracle: {
+      label: 'Oracle',
+      desc:  '₩19,900/월',
+      icon:  '🔮',
+      cls:   'oracle',
+      search: '무제한',
+      tracking: '10개',
+    },
+  };
+
+  let currentProfile = null;
+
+  /* ── 토큰 ── */
+  function getToken() { return localStorage.getItem('accessToken'); }
+  function getRefresh() { return localStorage.getItem('refreshToken'); }
+
+  /* ── 토큰 갱신 ── */
+  async function refreshAccessToken() {
+    const refreshToken = getRefresh();
+    if (!refreshToken) return null;
+    try {
+      const res = await fetch(BACKEND_URL + '/auth/refresh', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken }),
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      localStorage.setItem('accessToken', data.accessToken);
+      if (data.refreshToken) localStorage.setItem('refreshToken', data.refreshToken);
+      return data.accessToken;
+    } catch { return null; }
+  }
+
+  /* ── 인증 fetch (401 자동 갱신) ── */
+  async function fetchAuth(url, options = {}) {
+    let token = getToken();
+    const doFetch = (t) => fetch(url, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+        'Authorization': 'Bearer ' + t,
+      },
+    });
+
+    let res = await doFetch(token);
+    if (res.status === 401) {
+      const newToken = await refreshAccessToken();
+      if (!newToken) { goLogin(); return null; }
+      res = await doFetch(newToken);
+    }
+    return res;
+  }
+
+  /* ── 로그인 페이지로 ── */
+  function goLogin() {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    window.location.href = 'login.html';
+  }
+
+  /* ── 토스트 ── */
+  function showToast(msg, type) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'show ' + (type || '');
+    setTimeout(() => { el.className = ''; }, 4000);
+  }
+
+  /* ── 프로필 렌더 ── */
+  function renderProfile(profile) {
+    currentProfile = profile;
+
+    // 프로필 헤더
+    const name = profile.name || profile.email?.split('@')[0] || '사용자';
+    document.getElementById('profile-name').textContent = name;
+    document.getElementById('profile-email').textContent = profile.email || '';
+    document.getElementById('avatar-initial').textContent = name.charAt(0).toUpperCase();
+
+    // 플랜
+    const planKey = (profile.plan || profile.subscriptionPlan || 'starter').toLowerCase();
+    const meta = PLAN_META[planKey] || PLAN_META.starter;
+
+    const iconEl = document.getElementById('plan-icon');
+    iconEl.textContent = meta.icon;
+    iconEl.className = 'plan-icon ' + meta.cls;
+
+    document.getElementById('plan-label').textContent = meta.label;
+    document.getElementById('plan-desc').textContent = meta.desc;
+    document.getElementById('detail-search').textContent = meta.search;
+    document.getElementById('detail-tracking').textContent = meta.tracking;
+
+    // Oracle이면 업그레이드 버튼 숨김
+    if (planKey === 'oracle') {
+      document.getElementById('btn-upgrade').style.display = 'none';
+    }
+
+    // Starter 외 플랜이면 해지 버튼 표시
+    if (planKey !== 'starter') {
+      document.getElementById('cancel-btn-row').style.display = 'flex';
+    }
+  }
+
+  /* ── 프로필 로드 ── */
+  async function loadProfile() {
+    if (!getToken()) { goLogin(); return; }
+
+    try {
+      const res = await fetchAuth(BACKEND_URL + '/auth/profile');
+      if (!res) return;
+
+      if (!res.ok) {
+        if (res.status === 401) { goLogin(); return; }
+        showToast('프로필을 불러오지 못했습니다.', 'error');
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+        return;
+      }
+
+      const profile = await res.json();
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('content').style.display = 'block';
+      renderProfile(profile);
+
+    } catch (err) {
+      console.error('프로필 로드 오류:', err);
+      showToast('네트워크 오류가 발생했습니다.', 'error');
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('content').style.display = 'block';
+    }
+  }
+
+  /* ── 로그아웃 ── */
+  async function handleLogout() {
+    try {
+      const token = getToken();
+      if (token) {
+        await fetch(BACKEND_URL + '/auth/logout', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+        }).catch(() => {});
+      }
+    } finally {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      window.location.href = 'login.html';
+    }
+  }
+
+  /* ── 해지 모달 ── */
+  function openCancelModal() {
+    document.getElementById('cancel-modal').classList.add('show');
+    document.getElementById('cancel-modal-msg').textContent = '';
+    document.getElementById('cancel-modal-msg').className = '';
+    document.getElementById('btn-confirm-cancel').disabled = false;
+    document.getElementById('btn-confirm-cancel').textContent = '해지 신청';
+  }
+  function closeCancelModal() {
+    document.getElementById('cancel-modal').classList.remove('show');
+  }
+
+  async function confirmCancel() {
+    const btn = document.getElementById('btn-confirm-cancel');
+    const msgEl = document.getElementById('cancel-modal-msg');
+    btn.disabled = true;
+    btn.textContent = '처리 중…';
+
+    try {
+      const res = await fetchAuth(BACKEND_URL + '/portone/payment/unsubscribe', { method: 'POST' });
+      if (!res) return;
+
+      if (res.ok) {
+        msgEl.textContent = '해지 신청이 완료되었습니다. 현재 구독 기간 만료까지 이용 가능합니다.';
+        msgEl.className = 'ok';
+        document.getElementById('cancel-btn-row').style.display = 'none';
+        setTimeout(() => closeCancelModal(), 2500);
+      } else {
+        const err = await res.json().catch(() => ({}));
+        msgEl.textContent = err.message || '해지 신청에 실패했습니다. 이메일로 문의해 주세요.';
+        msgEl.className = 'err';
+        btn.disabled = false;
+        btn.textContent = '해지 신청';
+      }
+    } catch {
+      msgEl.textContent = '네트워크 오류가 발생했습니다.';
+      msgEl.className = 'err';
+      btn.disabled = false;
+      btn.textContent = '해지 신청';
+    }
+  }
+
+  /* ── 모달 바깥 클릭 시 닫기 ── */
+  document.getElementById('cancel-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeCancelModal();
+  });
+
+  /* ── 초기화 ── */
+  loadProfile();
+</script>
+</body>
+</html>

@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="StockLens 구독 플랜 — Starter(무료), Analyst(₩9,900/월), Oracle(₩19,900/월). 지금 바로 시작하세요." />
+  <meta name="description" content="StockLens 구독 플랜 — Starter(무료), Analyst(₩9,900/월), Oracle(₩19,900/월)." />
   <title>StockLens — 구독 플랜 선택</title>
   <script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
   <style>
-    /* ── 변수 ── */
     :root {
       --navy:   #042C53;
       --navy2:  #063660;
@@ -23,7 +22,6 @@
       --border: rgba(255,255,255,0.1);
       --radius: 16px;
     }
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
@@ -35,7 +33,6 @@
     }
     a { color: inherit; text-decoration: none; }
 
-    /* ── 공통 ── */
     .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
     .section { padding: 80px 0; }
     .section-label {
@@ -53,11 +50,7 @@
       line-height: 1.2;
       margin-bottom: 16px;
     }
-    .section-sub {
-      font-size: 16px;
-      color: var(--grey);
-      max-width: 540px;
-    }
+    .section-sub { font-size: 16px; color: var(--grey); max-width: 540px; }
 
     /* ── 네비 ── */
     nav {
@@ -74,12 +67,13 @@
       align-items: center;
       justify-content: space-between;
     }
-    .nav-logo {
-      font-size: 20px;
-      font-weight: 900;
-      letter-spacing: -0.5px;
-    }
+    .nav-logo { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
     .nav-logo span { color: var(--accent); }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
     .nav-back {
       font-size: 14px;
       color: var(--grey);
@@ -89,6 +83,19 @@
       transition: color .2s;
     }
     .nav-back:hover { color: var(--white); }
+    .nav-auth {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent);
+      padding: 7px 16px;
+      border-radius: 100px;
+      border: 1.5px solid rgba(33,150,243,0.4);
+      transition: background .2s, border-color .2s;
+    }
+    .nav-auth:hover {
+      background: rgba(33,150,243,0.12);
+      border-color: var(--accent);
+    }
 
     /* ── 히어로 ── */
     #hero {
@@ -109,29 +116,11 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-    .hero-sub {
-      font-size: 17px;
-      color: var(--grey);
-      margin-bottom: 12px;
-    }
-    .hero-trial-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(0,200,83,0.12);
-      border: 1px solid rgba(0,200,83,0.3);
-      border-radius: 100px;
-      padding: 6px 16px;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--green);
-      margin-top: 8px;
-    }
+    .hero-sub { font-size: 17px; color: var(--grey); }
 
-    /* ── 결제 섹션 ── */
+    /* ── 플랜 섹션 ── */
     #subscribe { padding: 60px 0 80px; }
 
-    /* 빌링 토글 */
     .billing-toggle {
       display: inline-flex;
       background: var(--card);
@@ -154,10 +143,7 @@
       cursor: pointer;
       transition: background .2s, color .2s;
     }
-    .billing-btn.active {
-      background: var(--blue);
-      color: var(--white);
-    }
+    .billing-btn.active { background: var(--blue); color: var(--white); }
     .save-badge {
       font-size: 11px;
       font-weight: 700;
@@ -171,7 +157,7 @@
       color: #fff;
     }
 
-    /* 플랜 그리드 */
+    /* ── 플랜 그리드 ── */
     .plans-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -213,45 +199,28 @@
       letter-spacing: 1.5px;
       margin-bottom: 10px;
     }
-    .plan-price-wrap { margin-bottom: 6px; }
     .plan-price {
       font-size: clamp(32px, 5vw, 44px);
       font-weight: 900;
       line-height: 1;
     }
-    .plan-price-unit {
-      font-size: 14px;
-      font-weight: 400;
-      color: var(--grey);
-    }
-    .plan-period {
-      font-size: 13px;
-      color: var(--grey);
-      margin-bottom: 4px;
-    }
-    .plan-annual-note {
-      font-size: 12px;
-      color: var(--green);
-      min-height: 16px;
-      margin-bottom: 20px;
-    }
-    .plan-features {
-      list-style: none;
-      margin-bottom: 28px;
-    }
+    .plan-price-unit { font-size: 14px; font-weight: 400; color: var(--grey); }
+    .plan-period { font-size: 13px; color: var(--grey); margin: 6px 0 4px; }
+    .plan-annual-note { font-size: 12px; color: var(--green); min-height: 16px; margin-bottom: 24px; }
+
+    .plan-features { list-style: none; margin-bottom: 28px; }
     .plan-features li {
       display: flex;
       align-items: flex-start;
       gap: 10px;
       font-size: 14px;
-      color: var(--grey);
-      padding: 7px 0;
+      color: var(--white);
+      padding: 8px 0;
       border-bottom: 1px solid var(--border);
     }
     .plan-features li:last-child { border-bottom: none; }
-    .plan-features li.active { color: var(--white); }
-    .plan-features .check { color: var(--green); flex-shrink: 0; }
-    .plan-features .highlight-item { color: var(--accent); flex-shrink: 0; }
+    .plan-features .check { color: var(--green); flex-shrink: 0; font-weight: 700; }
+    .plan-features .star { color: var(--accent); flex-shrink: 0; font-weight: 700; }
 
     .plan-cta {
       display: block;
@@ -266,57 +235,35 @@
       outline: none;
       transition: background .2s, transform .15s;
     }
-    .plan-cta.primary {
-      background: var(--blue);
-      color: var(--white);
-    }
-    .plan-cta.primary:hover {
-      background: var(--blue2);
-      transform: translateY(-1px);
-    }
+    .plan-cta.primary { background: var(--blue); color: var(--white); }
+    .plan-cta.primary:hover { background: var(--blue2); transform: translateY(-1px); }
     .plan-cta.outline {
       background: transparent;
       border: 1.5px solid var(--border);
       color: var(--grey);
     }
-    .plan-cta.outline:hover {
-      border-color: rgba(255,255,255,0.35);
-      color: var(--white);
-    }
-    .plan-cta:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
+    .plan-cta.outline:hover { border-color: rgba(255,255,255,0.35); color: var(--white); }
+    .plan-cta:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-    /* ── 결제 안내 배너 ── */
+    /* ── 결제 안내 ── */
     .payment-info {
       margin-top: 32px;
       background: rgba(255,255,255,0.03);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 24px 28px;
+      padding: 20px 28px;
     }
     .payment-info-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px 28px;
+      gap: 10px 28px;
       list-style: none;
     }
-    .payment-info-list li {
-      font-size: 13px;
-      color: var(--grey);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
+    .payment-info-list li { font-size: 13px; color: var(--grey); display: flex; align-items: center; gap: 6px; }
     .payment-info-list .ok { color: var(--green); font-weight: 700; }
 
-    /* ── 환불/해지 섹션 ── */
-    #refund {
-      background: var(--navy2);
-      border-top: 1px solid var(--border);
-    }
+    /* ── 환불/해지 ── */
+    #refund { background: var(--navy2); border-top: 1px solid var(--border); }
     .refund-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -329,21 +276,13 @@
       border-radius: var(--radius);
       padding: 28px 24px;
     }
-    .refund-card-icon { font-size: 28px; margin-bottom: 14px; }
-    .refund-card-title {
-      font-size: 16px;
-      font-weight: 800;
-      margin-bottom: 12px;
-    }
-    .refund-card p, .refund-card li {
-      font-size: 14px;
-      color: var(--grey);
-      line-height: 1.75;
-    }
-    .refund-card ul { padding-left: 18px; }
+    .refund-card-icon { font-size: 24px; margin-bottom: 12px; }
+    .refund-card-title { font-size: 15px; font-weight: 800; margin-bottom: 12px; }
+    .refund-card p, .refund-card li { font-size: 13px; color: var(--grey); line-height: 1.75; }
+    .refund-card ul { padding-left: 16px; }
     .refund-card li { margin-bottom: 4px; }
 
-    /* ── 면책조항 박스 ── */
+    /* ── 면책조항 ── */
     .disclaimer-box {
       background: rgba(255,59,48,0.07);
       border: 1px solid rgba(255,59,48,0.22);
@@ -351,26 +290,13 @@
       padding: 18px 22px;
       margin-top: 40px;
     }
-    .disclaimer-box p {
-      font-size: 13px;
-      color: #FF9090;
-      font-weight: 600;
-      line-height: 1.7;
-    }
+    .disclaimer-box p { font-size: 13px; color: #FF9090; font-weight: 600; line-height: 1.7; }
 
     /* ── 법적 고지 ── */
-    #legal-notice {
-      background: #021e3a;
-      border-top: 1px solid var(--border);
-      padding: 40px 0;
-    }
-    .legal-meta {
-      font-size: 12px;
-      color: var(--grey);
-      line-height: 2.2;
-    }
+    #legal-notice { background: #021e3a; border-top: 1px solid var(--border); padding: 36px 0; }
+    .legal-meta { font-size: 12px; color: var(--grey); line-height: 2.2; }
 
-    /* ── 결제 로딩 오버레이 ── */
+    /* ── 로딩 오버레이 ── */
     #pay-overlay {
       display: none;
       position: fixed;
@@ -393,7 +319,7 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     #pay-overlay p { font-size: 15px; color: var(--grey); }
 
-    /* ── 결과 토스트 ── */
+    /* ── 토스트 ── */
     #toast {
       position: fixed;
       bottom: 32px;
@@ -435,7 +361,6 @@
     .footer-links a { font-size: 13px; color: var(--grey); }
     .footer-links a:hover { color: var(--white); }
 
-    /* ── 반응형 ── */
     @media (max-width: 640px) {
       .plans-grid { grid-template-columns: 1fr; }
       .refund-grid { grid-template-columns: 1fr; }
@@ -444,23 +369,23 @@
 </head>
 <body>
 
-<!-- ── 로딩 오버레이 ── -->
 <div id="pay-overlay">
   <div class="spinner"></div>
   <p>결제창을 여는 중입니다…</p>
 </div>
-
-<!-- ── 토스트 ── -->
 <div id="toast"></div>
 
 <!-- ── 네비게이션 ── -->
 <nav>
   <div class="container nav-inner">
-    <div class="nav-logo">Stock<span>Lens</span></div>
-    <a href="index.html" class="nav-back">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-      랜딩 페이지로
-    </a>
+    <a href="index.html" class="nav-logo">Stock<span>Lens</span></a>
+    <div class="nav-right">
+      <a href="index.html" class="nav-back">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        홈으로
+      </a>
+      <a id="nav-auth-link" href="login.html" class="nav-auth">로그인</a>
+    </div>
   </div>
 </nav>
 
@@ -470,20 +395,12 @@
     <span class="section-label">구독 플랜</span>
     <h1 class="hero-title">나에게 맞는 플랜으로<br/><span class="highlight">시작하세요</span></h1>
     <p class="hero-sub">모든 플랜에 AI 분석 포함 · 언제든 취소 가능</p>
-    <span class="hero-trial-badge">
-      <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
-        <circle cx="7" cy="7" r="7" fill="#00C853" opacity=".3"/>
-        <circle cx="7" cy="7" r="4" fill="#00C853"/>
-      </svg>
-      3일 무료체험 후 자동결제
-    </span>
   </div>
 </section>
 
 <!-- ── 구독 플랜 ── -->
 <section id="subscribe">
   <div class="container">
-    <!-- 월간/연간 토글 -->
     <div style="text-align:center;">
       <div class="billing-toggle">
         <button class="billing-btn active" id="btn-monthly" onclick="setBilling('monthly')">월간</button>
@@ -495,78 +412,73 @@
 
     <div class="plans-grid">
 
-      <!-- Starter (무료) -->
+      <!-- Starter -->
       <div class="plan-card">
         <div class="plan-name">Starter</div>
-        <div class="plan-price-wrap">
-          <span class="plan-price">무료</span>
-        </div>
-        <div class="plan-period">3일 체험 후 ₩0</div>
-        <div class="plan-annual-note" id="starter-annual-note">&nbsp;</div>
+        <div class="plan-price">무료</div>
+        <div class="plan-period">기본 플랜</div>
+        <div class="plan-annual-note">&nbsp;</div>
         <ul class="plan-features">
-          <li class="active"><span class="check">✓</span> AI 종합 분석</li>
-          <li class="active"><span class="check">✓</span> 모든 데이터 열람</li>
-          <li class="active"><span class="check">✓</span> 검색 7회 / 일</li>
-          <li class="active"><span class="check">✓</span> 추적 종목 1개</li>
-          <li class="active"><span class="check">✓</span> 갱신 주기 15분</li>
+          <li><span class="check">✓</span> 검색 10회 / 일</li>
+          <li><span class="check">✓</span> 추적 종목 1개</li>
+          <li><span class="check">✓</span> AI 종합 분석</li>
+          <li><span class="check">✓</span> 재무제표 · 뉴스 · 주가 데이터</li>
         </ul>
-        <a href="https://apps.apple.com" class="plan-cta outline" target="_blank" rel="noopener">앱에서 시작 (무료)</a>
+        <button class="plan-cta outline" onclick="handleSubscribe('starter')">구독하기</button>
       </div>
 
       <!-- Analyst -->
       <div class="plan-card">
         <div class="plan-name">Analyst</div>
-        <div class="plan-price-wrap">
+        <div>
           <span class="plan-price" id="analyst-price">₩9,900</span>
           <span class="plan-price-unit"> /월</span>
         </div>
         <div class="plan-period" id="analyst-period">월간 정기결제 · 부가세 포함</div>
         <div class="plan-annual-note" id="analyst-annual-note">&nbsp;</div>
         <ul class="plan-features">
-          <li class="active"><span class="check">✓</span> Starter 전체 기능 포함</li>
-          <li class="active"><span class="check">✓</span> 검색 20회 / 일</li>
-          <li class="active"><span class="check">✓</span> 추적 종목 3개</li>
-          <li class="active"><span class="check">✓</span> 갱신 주기 10분</li>
-          <li class="active"><span class="check">✓</span> 모든 데이터 접근 (내부자·공매도 등)</li>
+          <li><span class="check">✓</span> 검색 30회 / 일</li>
+          <li><span class="check">✓</span> 추적 종목 3개</li>
+          <li><span class="check">✓</span> AI 종합 분석</li>
+          <li><span class="star">★</span> 내부자거래 · 공매도 데이터</li>
+          <li><span class="star">★</span> 감성분석 · 시장 심리 지수</li>
+          <li><span class="star">★</span> 경제지표 캘린더</li>
         </ul>
-        <button class="plan-cta outline" id="btn-analyst" onclick="startPayment('analyst')">Analyst 구독하기</button>
+        <button class="plan-cta outline" id="btn-analyst" onclick="handleSubscribe('analyst')">구독하기</button>
       </div>
 
       <!-- Oracle -->
       <div class="plan-card featured">
         <div class="plan-popular">가장 인기</div>
         <div class="plan-name">Oracle</div>
-        <div class="plan-price-wrap">
+        <div>
           <span class="plan-price" id="oracle-price">₩19,900</span>
           <span class="plan-price-unit"> /월</span>
         </div>
         <div class="plan-period" id="oracle-period">월간 정기결제 · 부가세 포함</div>
         <div class="plan-annual-note" id="oracle-annual-note">&nbsp;</div>
         <ul class="plan-features">
-          <li class="active"><span class="check">✓</span> Analyst 전체 기능 포함</li>
-          <li class="active"><span class="check">✓</span> 무제한 검색</li>
-          <li class="active"><span class="check">✓</span> 추적 종목 10개</li>
-          <li class="active"><span class="check">✓</span> 갱신 주기 5분 (가장 빠름)</li>
-          <li class="active"><span class="check">✓</span> 실시간 AI 분석 히스토리</li>
-          <li class="active"><span class="check">✓</span> 전용 고객지원</li>
+          <li><span class="check">✓</span> 무제한 검색</li>
+          <li><span class="check">✓</span> 추적 종목 10개</li>
+          <li><span class="check">✓</span> 실시간 AI 분석 히스토리</li>
+          <li><span class="star">★</span> 기관투자자 포지션 (SEC 13F)</li>
+          <li><span class="star">★</span> 의회 거래 내역</li>
+          <li><span class="star">★</span> 대주주 변동 (SEC 13D/13G)</li>
         </ul>
-        <button class="plan-cta primary" id="btn-oracle" onclick="startPayment('oracle')">Oracle 구독하기</button>
+        <button class="plan-cta primary" id="btn-oracle" onclick="handleSubscribe('oracle')">구독하기</button>
       </div>
 
     </div>
 
-    <!-- 결제 안내 -->
     <div class="payment-info">
       <ul class="payment-info-list">
         <li><span class="ok">✓</span> 결제 후 즉시 서비스 제공</li>
         <li><span class="ok">✓</span> 언제든지 취소 가능</li>
         <li><span class="ok">✓</span> 해지 시 다음 결제일까지 이용</li>
-        <li><span class="ok">✓</span> 3일 무료체험 후 자동결제</li>
         <li><span class="ok">✓</span> 안전한 카드 결제 (포트원 V2)</li>
       </ul>
     </div>
 
-    <!-- 면책조항 -->
     <div class="disclaimer-box">
       <p>⚠️ 투자 고지: 본 서비스는 투자 추천 또는 권유가 아닙니다. StockLens가 제공하는 모든 데이터와 AI 분석은 정보 제공 목적으로만 활용되어야 하며, 투자 결정의 최종 책임은 이용자 본인에게 있습니다. 투자에는 원금 손실 위험이 있습니다.</p>
     </div>
@@ -578,7 +490,6 @@
   <div class="container">
     <span class="section-label">환불 및 해지 안내</span>
     <h2 class="section-title">투명한 환불 정책</h2>
-    <p class="section-sub">언제든지 해지 가능하며, 합리적인 환불 정책을 운영합니다.</p>
 
     <div class="refund-grid">
       <div class="refund-card">
@@ -586,6 +497,7 @@
         <div class="refund-card-title">구독 해지 방법</div>
         <ul>
           <li>앱 내 '내 정보' → 구독 관리에서 취소</li>
+          <li>웹 '내 정보' 페이지에서 해지 신청</li>
           <li>이메일 문의: mdlab@moodilab.kr</li>
           <li>해지 후 현재 구독 기간 종료까지 이용 가능</li>
           <li>다음 결제 24시간 전까지 취소 시 다음 달 청구 없음</li>
@@ -599,17 +511,14 @@
           <li><strong style="color:var(--white)">월간 구독:</strong> 이미 결제된 월 구독료는 원칙적으로 환불되지 않습니다.</li>
           <li><strong style="color:var(--white)">연간 구독 중도 해지:</strong> 사용 개월 수를 월정가 기준으로 차감 후 잔액 환불</li>
           <li><strong style="color:var(--white)">서비스 장애:</strong> 회사 귀책 사유로 48시간 이상 중단 시 비례 환불 협의</li>
-          <li><strong style="color:var(--white)">무료체험 기간 내 취소:</strong> 요금 청구 없음</li>
         </ul>
       </div>
 
       <div class="refund-card">
         <div class="refund-card-icon">💬</div>
         <div class="refund-card-title">고객 지원</div>
-        <p style="margin-bottom:12px;">궁금한 점이 있으시면 언제든지 연락해 주세요.</p>
         <ul>
           <li>이메일: <a href="mailto:mdlab@moodilab.kr" style="color:var(--accent)">mdlab@moodilab.kr</a></li>
-          <li>전화: 010-5150-1343</li>
           <li>운영 시간: 평일 09:00 – 18:00 KST</li>
           <li>이메일 답변: 영업일 기준 24시간 내</li>
         </ul>
@@ -617,7 +526,7 @@
 
       <div class="refund-card">
         <div class="refund-card-icon">📋</div>
-        <div class="refund-card-title">법적 고지</div>
+        <div class="refund-card-title">사업자 정보</div>
         <ul>
           <li>상호명: 무디랩</li>
           <li>대표자: 전창평</li>
@@ -628,8 +537,7 @@
       </div>
     </div>
 
-    <!-- 법적 링크 -->
-    <div style="margin-top:32px;display:flex;gap:12px;flex-wrap:wrap;">
+    <div style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap;">
       <a href="index.html#privacy" style="font-size:13px;color:var(--grey);text-decoration:underline;">개인정보처리방침</a>
       <a href="index.html#terms" style="font-size:13px;color:var(--grey);text-decoration:underline;">이용약관</a>
       <a href="index.html#refund-policy" style="font-size:13px;color:var(--grey);text-decoration:underline;">전체 환불 정책</a>
@@ -655,9 +563,10 @@
     <div class="footer-logo">Stock<span>Lens</span></div>
     <div class="footer-links">
       <a href="index.html">홈</a>
+      <a href="mypage.html">내 정보</a>
       <a href="index.html#privacy">개인정보처리방침</a>
       <a href="index.html#terms">이용약관</a>
-      <a href="mailto:mdlab@moodilab.kr">문의 mdlab@moodilab.kr</a>
+      <a href="mailto:mdlab@moodilab.kr">mdlab@moodilab.kr</a>
     </div>
     <p>© 2026 moodilab. All rights reserved.</p>
     <p style="margin-top:6px;">본 서비스는 투자 추천이 아닙니다. 투자의 최종 책임은 투자자 본인에게 있습니다.</p>
@@ -665,63 +574,98 @@
 </footer>
 
 <script>
-  /* ─────────────────────────────────────────
-   *  설정값 (포트원 V2)
-   * ─────────────────────────────────────────
-   * storeId, channelKey: 포트원 콘솔에서 발급받은 값으로 교체하세요.
-   * 현재는 개발/테스트용 placeholder입니다.
-   * ───────────────────────────────────────── */
-  const PORTONE_STORE_ID  = 'store_XXXX';        // TODO: 포트원 콘솔 → 가맹점 식별코드
-  const PORTONE_CHANNEL_KEY = 'channel-key-XXXX'; // TODO: 포트원 콘솔 → 결제 채널키
+  const PORTONE_STORE_ID   = 'store_XXXX';         // TODO: 포트원 콘솔 → 가맹점 식별코드
+  const PORTONE_CHANNEL_KEY = 'channel-key-XXXX';  // TODO: 포트원 콘솔 → 결제 채널키
   const BACKEND_URL = 'https://stocklens-production-3724.up.railway.app';
 
-  /* 플랜별 가격 정보 */
   const PLANS = {
     analyst: {
       name: 'Analyst',
-      monthly:  { amount: 9900,  label: 'StockLens Analyst 월간 구독' },
-      annual:   { amount: 95040, label: 'StockLens Analyst 연간 구독' }, // 9,900×12×0.8
+      monthly: { amount: 9900,   label: 'StockLens Analyst 월간 구독' },
+      annual:  { amount: 95040,  label: 'StockLens Analyst 연간 구독' },
     },
     oracle: {
       name: 'Oracle',
-      monthly:  { amount: 19900,  label: 'StockLens Oracle 월간 구독' },
-      annual:   { amount: 191040, label: 'StockLens Oracle 연간 구독' }, // 19,900×12×0.8
+      monthly: { amount: 19900,  label: 'StockLens Oracle 월간 구독' },
+      annual:  { amount: 191040, label: 'StockLens Oracle 연간 구독' },
     },
   };
 
   let currentBilling = 'monthly';
 
+  /* ── 네비 인증 상태 ── */
+  function updateNavAuth() {
+    const token = localStorage.getItem('accessToken');
+    const link = document.getElementById('nav-auth-link');
+    if (token) {
+      link.textContent = '내 정보';
+      link.href = 'mypage.html';
+    } else {
+      link.textContent = '로그인';
+      link.href = 'login.html';
+    }
+  }
+
+  /* ── 토큰 갱신 ── */
+  async function refreshAccessToken() {
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (!refreshToken) return null;
+    try {
+      const res = await fetch(BACKEND_URL + '/auth/refresh', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken }),
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      localStorage.setItem('accessToken', data.accessToken);
+      if (data.refreshToken) localStorage.setItem('refreshToken', data.refreshToken);
+      return data.accessToken;
+    } catch { return null; }
+  }
+
+  /* ── 구독하기 버튼 클릭 ── */
+  async function handleSubscribe(plan) {
+    let token = localStorage.getItem('accessToken');
+
+    // 토큰 없으면 로그인 페이지로
+    if (!token) {
+      const redirect = encodeURIComponent('subscribe.html?plan=' + plan);
+      window.location.href = 'login.html?redirect=' + redirect;
+      return;
+    }
+
+    // Starter (무료) → 내 정보 페이지로 이동
+    if (plan === 'starter') {
+      window.location.href = 'mypage.html';
+      return;
+    }
+
+    // 유료 플랜 → 포트원 결제
+    await startPayment(plan, token);
+  }
+
   /* ── 월간/연간 토글 ── */
   function setBilling(period) {
     currentBilling = period;
-
     const btnM = document.getElementById('btn-monthly');
     const btnA = document.getElementById('btn-annual');
 
     if (period === 'annual') {
       btnA.classList.add('active');
       btnM.classList.remove('active');
-
-      // Analyst 가격 업데이트
       document.getElementById('analyst-price').textContent = '₩95,040';
       document.getElementById('analyst-period').textContent = '연간 정기결제 · 부가세 포함';
       document.getElementById('analyst-annual-note').textContent = '월 7,920원 상당 (20% 할인)';
-
-      // Oracle 가격 업데이트
       document.getElementById('oracle-price').textContent = '₩191,040';
       document.getElementById('oracle-period').textContent = '연간 정기결제 · 부가세 포함';
       document.getElementById('oracle-annual-note').textContent = '월 15,920원 상당 (20% 할인)';
-
     } else {
       btnM.classList.add('active');
       btnA.classList.remove('active');
-
-      // Analyst 가격 업데이트
       document.getElementById('analyst-price').textContent = '₩9,900';
       document.getElementById('analyst-period').textContent = '월간 정기결제 · 부가세 포함';
       document.getElementById('analyst-annual-note').textContent = '\u00a0';
-
-      // Oracle 가격 업데이트
       document.getElementById('oracle-price').textContent = '₩19,900';
       document.getElementById('oracle-period').textContent = '월간 정기결제 · 부가세 포함';
       document.getElementById('oracle-annual-note').textContent = '\u00a0';
@@ -746,76 +690,76 @@
   }
 
   /* ── 포트원 V2 결제 ── */
-  async function startPayment(plan) {
+  async function startPayment(plan, token) {
     const info = PLANS[plan];
     if (!info) return;
 
-    const billing = currentBilling;
-    const priceInfo = info[billing];
-    const paymentId = 'stocklens-' + plan + '-' + billing + '-' + Date.now();
+    const priceInfo = info[currentBilling];
+    const paymentId = 'stocklens-' + plan + '-' + currentBilling + '-' + Date.now();
 
     setLoading(true);
-
     try {
       const response = await PortOne.requestPayment({
-        storeId:    PORTONE_STORE_ID,
-        channelKey: PORTONE_CHANNEL_KEY,
-        paymentId:  paymentId,
-        orderName:  priceInfo.label,
+        storeId:     PORTONE_STORE_ID,
+        channelKey:  PORTONE_CHANNEL_KEY,
+        paymentId:   paymentId,
+        orderName:   priceInfo.label,
         totalAmount: priceInfo.amount,
-        currency:   'CURRENCY_KRW',
-        payMethod:  'CARD',
-        customer: {
-          fullName: '',
-          email:    '',
-        },
+        currency:    'CURRENCY_KRW',
+        payMethod:   'CARD',
+        customer: { fullName: '', email: '' },
         redirectUrl: window.location.origin + '/subscribe.html',
       });
 
       setLoading(false);
 
       if (response.code) {
-        // 사용자 취소
-        if (response.code === 'FAILURE_TYPE_PG' || response.message?.includes('cancel')) {
-          return;
-        }
+        if (response.code === 'FAILURE_TYPE_PG' || response.message?.includes('cancel')) return;
         showToast('결제 실패: ' + (response.message || response.code), 'error');
         return;
       }
 
-      // 결제 완료 → 백엔드 검증
-      await verifyPayment(paymentId, plan, billing, priceInfo.amount);
+      await verifyPayment(paymentId, plan, currentBilling, priceInfo.amount, token);
 
     } catch (err) {
       setLoading(false);
-      // 사용자 취소는 조용히 처리
-      if (err && (err.code === 'USER_CANCEL' || err.code === 'PAY_PROCESS_CANCELED')) {
-        return;
-      }
+      if (err && (err.code === 'USER_CANCEL' || err.code === 'PAY_PROCESS_CANCELED')) return;
       console.error('결제 오류:', err);
       showToast('결제 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.', 'error');
     }
   }
 
   /* ── 백엔드 결제 검증 ── */
-  async function verifyPayment(paymentId, plan, billing, amount) {
+  async function verifyPayment(paymentId, plan, billing, amount, token) {
     try {
       const res = await fetch(BACKEND_URL + '/portone/payment/complete', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token,
+        },
         body: JSON.stringify({ paymentId, plan, billing, amount }),
       });
 
       if (!res.ok) {
+        // 401 → 토큰 갱신 후 재시도
+        if (res.status === 401) {
+          const newToken = await refreshAccessToken();
+          if (newToken) {
+            await verifyPayment(paymentId, plan, billing, amount, newToken);
+            return;
+          }
+          window.location.href = 'login.html';
+          return;
+        }
         const err = await res.json().catch(() => ({}));
         showToast('결제 검증 실패: ' + (err.message || '서버 오류'), 'error');
         return;
       }
 
-      // 성공
       showToast('구독이 완료되었습니다! 앱에서 새 플랜을 확인해 주세요.', 'success');
       setTimeout(() => {
-        window.location.href = 'success.html?plan=' + plan + '&period=' + billing;
+        window.location.href = 'mypage.html';
       }, 2000);
 
     } catch (e) {
@@ -823,6 +767,20 @@
       showToast('네트워크 오류가 발생했습니다. 결제가 완료됐다면 mdlab@moodilab.kr로 문의해 주세요.', 'error');
     }
   }
+
+  /* ── 초기화 ── */
+  (function init() {
+    updateNavAuth();
+
+    // URL에서 plan 파라미터 자동 감지
+    const params = new URLSearchParams(window.location.search);
+    const plan = params.get('plan');
+    if (plan && (plan === 'analyst' || plan === 'oracle')) {
+      // 로그인 후 리다이렉트 돼서 온 경우 자동으로 결제 시작
+      const token = localStorage.getItem('accessToken');
+      if (token) startPayment(plan, token);
+    }
+  })();
 </script>
 </body>
 </html>
