@@ -329,6 +329,24 @@
     }
     #cancel-modal-msg.ok { color: var(--green); }
     #cancel-modal-msg.err { color: #FF9090; }
+    .btn-modal-apple {
+      flex: 1;
+      padding: 12px;
+      background: rgba(33,150,243,0.12);
+      border: 1.5px solid rgba(33,150,243,0.4);
+      border-radius: 10px;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s;
+    }
+    .btn-modal-apple:hover { background: rgba(33,150,243,0.22); }
 
     /* ── 토스트 ── */
     #toast {
@@ -365,10 +383,7 @@
 
 <nav>
   <a href="index.html" class="nav-logo">Stock<span>Lens</span></a>
-  <a href="index.html" class="nav-back">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-    홈으로
-  </a>
+
 </nav>
 
 <main>
@@ -439,15 +454,7 @@
 <div id="cancel-modal">
   <div class="modal-card">
     <div class="modal-title">구독 해지 신청</div>
-    <p class="modal-sub">구독을 해지하시겠습니까?</p>
-    <div class="modal-notice">
-      ⚠️ 해지 후에도 현재 구독 기간 만료일까지 서비스를 계속 이용하실 수 있습니다. 다음 결제는 발생하지 않습니다.
-    </div>
-    <div id="cancel-modal-msg"></div>
-    <div class="modal-actions">
-      <button class="btn-modal-cancel" onclick="closeCancelModal()">취소</button>
-      <button class="btn-modal-confirm" id="btn-confirm-cancel" onclick="confirmCancel()">해지 신청</button>
-    </div>
+    <div id="cancel-modal-body"></div>
   </div>
 </div>
 
@@ -629,12 +636,52 @@
 
   /* ── 해지 모달 ── */
   function openCancelModal() {
-    document.getElementById('cancel-modal').classList.add('show');
-    document.getElementById('cancel-modal-msg').textContent = '';
-    document.getElementById('cancel-modal-msg').className = '';
-    document.getElementById('btn-confirm-cancel').disabled = false;
-    document.getElementById('btn-confirm-cancel').textContent = '해지 신청';
+    const modal = document.getElementById('cancel-modal');
+    const body = document.getElementById('cancel-modal-body');
+    const paymentMethod = currentProfile?.paymentMethod || null;
+    const planKey = (currentProfile?.plan || currentProfile?.subscriptionPlan || 'starter').toLowerCase();
+
+    modal.classList.add('show');
+
+    if (paymentMethod === 'apple') {
+      body.innerHTML = `
+        <p class="modal-sub">Apple 앱 내 구독으로 결제하셨습니다.<br>구독 해지/환불은 Apple 구독 관리에서 진행해주세요.</p>
+        <div class="modal-actions">
+          <button class="btn-modal-cancel" onclick="closeCancelModal()">닫기</button>
+          <a href="https://apps.apple.com/account/subscriptions" target="_blank" class="btn-modal-confirm" style="text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;">Apple 구독 관리로 이동</a>
+        </div>
+      `;
+    } else if (paymentMethod === 'portone') {
+      body.innerHTML = `
+        <p class="modal-sub">구독을 해지하시겠습니까?</p>
+        <div class="modal-notice">⚠️ 해지 후에도 현재 구독 기간 만료일까지 서비스를 계속 이용하실 수 있습니다. 다음 결제는 발생하지 않습니다.</div>
+        <div id="cancel-modal-msg"></div>
+        <div class="modal-actions">
+          <button class="btn-modal-cancel" onclick="closeCancelModal()">취소</button>
+          <button class="btn-modal-confirm" id="btn-confirm-cancel" onclick="confirmCancel()">해지 신청</button>
+        </div>
+      `;
+    } else if (paymentMethod === 'free' || planKey === 'starter') {
+      body.innerHTML = `
+        <p class="modal-sub">현재 무료 플랜입니다. 해지할 구독이 없습니다.</p>
+        <div class="modal-actions">
+          <button class="btn-modal-cancel" onclick="closeCancelModal()">닫기</button>
+        </div>
+      `;
+    } else {
+      // paymentMethod 미설정 + 유료 플랜 → 결제 방식 선택
+      body.innerHTML = `
+        <p class="modal-sub">어떤 방식으로 결제하셨나요?</p>
+        <div class="modal-actions" style="flex-direction:column;gap:8px;">
+          <a href="https://apps.apple.com/account/subscriptions" target="_blank" class="btn-modal-apple">📱 앱 내 결제 (Apple)</a>
+          <button class="btn-modal-confirm" id="btn-confirm-cancel" onclick="confirmCancel()">💳 웹 결제 (카드)</button>
+          <div id="cancel-modal-msg"></div>
+          <button class="btn-modal-cancel" onclick="closeCancelModal()">취소</button>
+        </div>
+      `;
+    }
   }
+
   function closeCancelModal() {
     document.getElementById('cancel-modal').classList.remove('show');
   }
