@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="StockLens 로그인" />
+  <meta name="description" content="StockLens 웹 로그인 — 앱에서 발급받은 인증코드로 로그인하세요" />
   <title>StockLens — 로그인</title>
   <style>
     :root {
@@ -45,15 +45,6 @@
     }
     .nav-logo { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
     .nav-logo span { color: var(--accent); }
-    .nav-back {
-      font-size: 14px;
-      color: var(--grey);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: color .2s;
-    }
-    .nav-back:hover { color: var(--white); }
 
     /* ── 메인 ── */
     .main {
@@ -93,11 +84,32 @@
       text-align: center;
       font-size: 14px;
       color: var(--grey);
-      margin-bottom: 36px;
+      margin-bottom: 32px;
     }
 
+    /* ── 앱 안내 배너 ── */
+    .otp-guide {
+      background: rgba(33,150,243,0.08);
+      border: 1px solid rgba(33,150,243,0.25);
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 13px;
+      color: var(--grey);
+      line-height: 1.7;
+      margin-bottom: 28px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .otp-guide-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .otp-guide strong { color: var(--accent); display: block; margin-bottom: 2px; }
+
     /* ── 폼 ── */
-    .form-group { margin-bottom: 18px; }
+    .form-group { margin-bottom: 20px; }
     label {
       display: block;
       font-size: 13px;
@@ -105,8 +117,7 @@
       color: var(--grey);
       margin-bottom: 8px;
     }
-    input[type="email"],
-    input[type="password"] {
+    input[type="email"] {
       width: 100%;
       background: rgba(255,255,255,0.06);
       border: 1.5px solid var(--border);
@@ -118,27 +129,43 @@
       transition: border-color .2s;
       -webkit-appearance: none;
     }
-    input[type="email"]::placeholder,
-    input[type="password"]::placeholder { color: rgba(160,180,200,0.5); }
-    input[type="email"]:focus,
-    input[type="password"]:focus { border-color: var(--accent); }
+    input[type="email"]::placeholder { color: rgba(160,180,200,0.5); }
+    input[type="email"]:focus { border-color: var(--accent); }
 
-    /* 비밀번호 토글 */
-    .pw-wrap { position: relative; }
-    .pw-toggle {
-      position: absolute;
-      right: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: var(--grey);
-      cursor: pointer;
-      padding: 4px;
+    /* ── OTP 입력 6칸 ── */
+    .otp-wrap {
       display: flex;
-      align-items: center;
+      gap: 10px;
+      justify-content: space-between;
     }
-    .pw-toggle:hover { color: var(--white); }
+    .otp-digit {
+      flex: 1;
+      max-width: 52px;
+      height: 60px;
+      background: rgba(255,255,255,0.06);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--white);
+      outline: none;
+      transition: border-color .2s, background .2s;
+      caret-color: var(--accent);
+      -webkit-appearance: none;
+    }
+    .otp-digit::placeholder { color: rgba(160,180,200,0.25); font-size: 18px; }
+    .otp-digit:focus {
+      border-color: var(--accent);
+      background: rgba(33,150,243,0.08);
+    }
+    .otp-digit.filled {
+      border-color: rgba(33,150,243,0.5);
+    }
+    @media (max-width: 380px) {
+      .otp-wrap { gap: 7px; }
+      .otp-digit { height: 52px; font-size: 20px; }
+    }
 
     /* ── 오류 메시지 ── */
     #error-msg {
@@ -150,6 +177,7 @@
       font-size: 13px;
       color: #FF9090;
       margin-bottom: 18px;
+      line-height: 1.5;
     }
     #error-msg.show { display: block; }
 
@@ -173,101 +201,6 @@
     .btn-login:hover:not(:disabled) { background: var(--blue2); transform: translateY(-1px); }
     .btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-    /* ── 하단 링크 ── */
-    .login-footer {
-      margin-top: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      align-items: center;
-    }
-    .login-footer a {
-      font-size: 13px;
-      color: var(--grey);
-      transition: color .2s;
-    }
-    .login-footer a:hover { color: var(--white); }
-    .login-footer .divider { color: rgba(160,180,200,0.3); }
-
-    /* 앱 가입 안내 */
-    .app-notice {
-      margin-top: 24px;
-      background: rgba(33,150,243,0.08);
-      border: 1px solid rgba(33,150,243,0.2);
-      border-radius: 12px;
-      padding: 16px 18px;
-      font-size: 13px;
-      color: var(--grey);
-      text-align: center;
-      line-height: 1.7;
-    }
-    .app-notice strong { color: var(--accent); }
-
-    /* ── 비밀번호 찾기 모달 ── */
-    #pw-modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(4,44,83,0.88);
-      z-index: 200;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-    #pw-modal.show { display: flex; }
-    .modal-card {
-      background: #0c2340;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 36px 32px;
-      width: 100%;
-      max-width: 400px;
-    }
-    .modal-title {
-      font-size: 18px;
-      font-weight: 800;
-      margin-bottom: 8px;
-    }
-    .modal-sub { font-size: 13px; color: var(--grey); margin-bottom: 24px; }
-    .modal-actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 20px;
-    }
-    .btn-modal-cancel {
-      flex: 1;
-      padding: 12px;
-      background: transparent;
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      color: var(--grey);
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .btn-modal-cancel:hover { border-color: rgba(255,255,255,0.3); color: var(--white); }
-    .btn-modal-send {
-      flex: 1;
-      padding: 12px;
-      background: var(--blue);
-      border: none;
-      border-radius: 10px;
-      color: var(--white);
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .btn-modal-send:hover { background: var(--blue2); }
-    .btn-modal-send:disabled { opacity: 0.6; cursor: not-allowed; }
-    #pw-modal-msg {
-      font-size: 13px;
-      margin-top: 12px;
-      min-height: 18px;
-      text-align: center;
-    }
-    #pw-modal-msg.ok { color: var(--green); }
-    #pw-modal-msg.err { color: #FF9090; }
-
     /* ── 스피너 ── */
     .spinner-sm {
       width: 18px; height: 18px;
@@ -280,6 +213,17 @@
     .btn-login.loading .spinner-sm { display: block; }
     .btn-login.loading .btn-text { display: none; }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── 하단 ── */
+    .login-footer {
+      margin-top: 28px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--grey);
+      line-height: 1.7;
+    }
+    .login-footer a { color: var(--accent); }
+    .login-footer a:hover { text-decoration: underline; }
 
     /* ── 푸터 ── */
     footer {
@@ -294,65 +238,62 @@
 
 <nav>
   <a href="index.html" class="nav-logo">Stock<span>Lens</span></a>
-
 </nav>
 
 <main class="main">
   <div class="login-card">
     <div class="login-logo">Stock<span>Lens</span></div>
-    <h1 class="login-title">로그인</h1>
-    <p class="login-sub">계정에 로그인하여 서비스를 이용하세요</p>
+    <h1 class="login-title">웹 결제 로그인</h1>
+    <p class="login-sub">앱에서 발급받은 인증코드로 로그인하세요</p>
 
-    <form id="login-form" onsubmit="handleLogin(event)">
+    <div class="otp-guide">
+      <div class="otp-guide-icon">📱</div>
+      <div>
+        <strong>인증코드 발급 방법</strong>
+        StockLens 앱 → 내 정보 탭 → <b>웹 결제 인증코드 발급</b>을 탭하여 6자리 코드를 확인하세요.
+      </div>
+    </div>
+
+    <form id="login-form" onsubmit="handleLogin(event)" novalidate>
       <div class="form-group">
         <label for="email">이메일</label>
-        <input type="email" id="email" name="email" placeholder="example@email.com" autocomplete="email" required />
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="앱 가입 이메일"
+          autocomplete="email"
+          inputmode="email"
+          required
+        />
       </div>
+
       <div class="form-group">
-        <label for="password">비밀번호</label>
-        <div class="pw-wrap">
-          <input type="password" id="password" name="password" placeholder="비밀번호를 입력하세요" autocomplete="current-password" required />
-          <button type="button" class="pw-toggle" onclick="togglePw()" aria-label="비밀번호 표시">
-            <svg id="pw-eye" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          </button>
+        <label>인증코드 (6자리)</label>
+        <div class="otp-wrap" id="otp-wrap">
+          <input class="otp-digit" type="text" inputmode="numeric" maxlength="1" placeholder="·" autocomplete="one-time-code" aria-label="인증코드 1번째 자리" />
+          <input class="otp-digit" type="text" inputmode="numeric" maxlength="1" placeholder="·" aria-label="인증코드 2번째 자리" />
+          <input class="otp-digit" type="text" inputmode="numeric" maxlength="1" placeholder="·" aria-label="인증코드 3번째 자리" />
+          <input class="otp-digit" type="text" inputmode="numeric" maxlength="1" placeholder="·" aria-label="인증코드 4번째 자리" />
+          <input class="otp-digit" type="text" inputmode="numeric" maxlength="1" placeholder="·" aria-label="인증코드 5번째 자리" />
+          <input class="otp-digit" type="text" inputmode="numeric" maxlength="1" placeholder="·" aria-label="인증코드 6번째 자리" />
         </div>
       </div>
 
-      <div id="error-msg"></div>
+      <div id="error-msg" role="alert"></div>
 
-      <button type="submit" class="btn-login" id="btn-submit">
+      <button type="submit" class="btn-login" id="btn-submit" disabled>
         <div class="spinner-sm"></div>
         <span class="btn-text">로그인</span>
       </button>
     </form>
 
     <div class="login-footer">
-      <a href="#" onclick="openPwModal(event)">비밀번호를 잊으셨나요?</a>
-    </div>
-
-    <div class="app-notice">
-      <strong>회원가입은 앱에서만 가능합니다.</strong><br/>
-      App Store에서 StockLens를 다운로드하여 회원가입 후 이용해 주세요.
+      아직 앱이 없으신가요?
+      <a href="https://apps.apple.com/app/stocklens" target="_blank" rel="noopener">App Store에서 다운로드</a>
     </div>
   </div>
 </main>
-
-<!-- ── 비밀번호 찾기 모달 ── -->
-<div id="pw-modal">
-  <div class="modal-card">
-    <div class="modal-title">비밀번호 재설정</div>
-    <p class="modal-sub">가입한 이메일을 입력하면 재설정 링크를 보내드립니다.</p>
-    <div class="form-group">
-      <label for="reset-email">이메일</label>
-      <input type="email" id="reset-email" placeholder="example@email.com" />
-    </div>
-    <div id="pw-modal-msg"></div>
-    <div class="modal-actions">
-      <button class="btn-modal-cancel" onclick="closePwModal()">취소</button>
-      <button class="btn-modal-send" id="btn-send-reset" onclick="sendResetEmail()">전송</button>
-    </div>
-  </div>
-</div>
 
 <footer>
   <p>© 2026 moodilab. All rights reserved. &nbsp;|&nbsp; 본 서비스는 투자 추천이 아닙니다.</p>
@@ -363,27 +304,93 @@
 
   /* ── 이미 로그인 상태면 리다이렉트 ── */
   (function checkAlreadyLoggedIn() {
-    if (localStorage.getItem('accessToken')) {
+    if (sessionStorage.getItem('accessToken')) {
       const params = new URLSearchParams(window.location.search);
       const redirect = params.get('redirect');
-      window.location.href = redirect ? decodeURIComponent(redirect) : 'mypage.html';
+      window.location.href = redirect ? decodeURIComponent(redirect) : 'subscribe.html';
     }
   })();
 
-  /* ── 비밀번호 표시 토글 ── */
-  function togglePw() {
-    const input = document.getElementById('password');
-    input.type = input.type === 'password' ? 'text' : 'password';
+  /* ── OTP 입력 컨트롤 ── */
+  const digits = Array.from(document.querySelectorAll('.otp-digit'));
+  const btn    = document.getElementById('btn-submit');
+
+  function getOtp() {
+    return digits.map(d => d.value).join('');
   }
+
+  function updateSubmitState() {
+    const emailOk = document.getElementById('email').value.trim().length > 0;
+    const otpOk   = getOtp().length === 6;
+    btn.disabled  = !(emailOk && otpOk);
+  }
+
+  document.getElementById('email').addEventListener('input', updateSubmitState);
+
+  digits.forEach((el, i) => {
+    el.addEventListener('input', function (e) {
+      // 숫자만 허용
+      const val = this.value.replace(/\D/g, '');
+      this.value = val ? val[val.length - 1] : '';
+
+      if (this.value) {
+        this.classList.add('filled');
+        if (i < digits.length - 1) digits[i + 1].focus();
+      } else {
+        this.classList.remove('filled');
+      }
+      updateSubmitState();
+    });
+
+    // 붙여넣기 처리
+    el.addEventListener('paste', function (e) {
+      e.preventDefault();
+      const pasted = (e.clipboardData || window.clipboardData)
+        .getData('text')
+        .replace(/\D/g, '')
+        .slice(0, 6);
+      pasted.split('').forEach((ch, idx) => {
+        if (digits[i + idx]) {
+          digits[i + idx].value = ch;
+          digits[i + idx].classList.add('filled');
+        }
+      });
+      const next = i + pasted.length;
+      if (digits[next]) digits[next].focus();
+      else digits[digits.length - 1].blur();
+      updateSubmitState();
+    });
+
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Backspace' && !this.value && i > 0) {
+        digits[i - 1].value = '';
+        digits[i - 1].classList.remove('filled');
+        digits[i - 1].focus();
+        updateSubmitState();
+      }
+      // ArrowLeft / ArrowRight 이동
+      if (e.key === 'ArrowLeft'  && i > 0)              { e.preventDefault(); digits[i - 1].focus(); }
+      if (e.key === 'ArrowRight' && i < digits.length-1){ e.preventDefault(); digits[i + 1].focus(); }
+    });
+  });
 
   /* ── 오류 표시 ── */
   function showError(msg) {
     const el = document.getElementById('error-msg');
+    // XSS 방지: textContent 사용
     el.textContent = msg;
     el.classList.add('show');
   }
   function clearError() {
-    document.getElementById('error-msg').classList.remove('show');
+    const el = document.getElementById('error-msg');
+    el.textContent = '';
+    el.classList.remove('show');
+  }
+
+  function resetOtp() {
+    digits.forEach(d => { d.value = ''; d.classList.remove('filled'); });
+    digits[0].focus();
+    updateSubmitState();
   }
 
   /* ── 로그인 ── */
@@ -392,101 +399,58 @@
     clearError();
 
     const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value;
-    const btn = document.getElementById('btn-submit');
+    const otp   = getOtp();
+
+    if (!email) { showError('이메일을 입력해 주세요.'); return; }
+    if (otp.length !== 6) { showError('인증코드 6자리를 모두 입력해 주세요.'); return; }
 
     btn.classList.add('loading');
     btn.disabled = true;
 
     try {
-      const res = await fetch(BACKEND_URL + '/auth/login', {
+      const res = await fetch(BACKEND_URL + '/auth/web-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, otp }),
       });
 
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        const msg = data.message || (res.status === 401 ? '이메일 또는 비밀번호가 올바르지 않습니다.' : '로그인에 실패했습니다.');
+        let msg;
+        if (res.status === 401) {
+          const code = (data.code || '').toUpperCase();
+          if (code === 'OTP_EXPIRED')  msg = '인증코드가 만료되었습니다. 앱에서 새 코드를 발급해 주세요.';
+          else if (code === 'OTP_INVALID') msg = '인증코드가 올바르지 않습니다. 코드를 다시 확인해 주세요.';
+          else if (code === 'BLOCKED') msg = '로그인 시도가 너무 많습니다. 잠시 후 다시 시도해 주세요.';
+          else msg = data.message || '이메일 또는 인증코드가 올바르지 않습니다.';
+        } else if (res.status === 429) {
+          msg = '요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.';
+        } else {
+          msg = data.message || '로그인에 실패했습니다. 다시 시도해 주세요.';
+        }
         showError(msg);
+        resetOtp();
         return;
       }
 
-      // 토큰 저장
-      localStorage.setItem('accessToken', data.accessToken);
-      if (data.refreshToken) localStorage.setItem('refreshToken', data.refreshToken);
+      // sessionStorage에 토큰 저장 (탭 닫으면 만료)
+      sessionStorage.setItem('accessToken', data.accessToken);
+      sessionStorage.setItem('userEmail', email);
 
       // 리다이렉트
-      const params = new URLSearchParams(window.location.search);
+      const params   = new URLSearchParams(window.location.search);
       const redirect = params.get('redirect');
-      window.location.href = redirect ? decodeURIComponent(redirect) : 'mypage.html';
+      window.location.href = redirect ? decodeURIComponent(redirect) : 'subscribe.html';
 
     } catch (err) {
       console.error('로그인 오류:', err);
       showError('네트워크 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
     } finally {
       btn.classList.remove('loading');
-      btn.disabled = false;
+      updateSubmitState(); // disabled 상태 재계산
     }
   }
-
-  /* ── 비밀번호 찾기 모달 ── */
-  function openPwModal(e) {
-    e.preventDefault();
-    document.getElementById('pw-modal').classList.add('show');
-    document.getElementById('reset-email').value = document.getElementById('email').value;
-    document.getElementById('pw-modal-msg').textContent = '';
-    document.getElementById('pw-modal-msg').className = '';
-  }
-  function closePwModal() {
-    document.getElementById('pw-modal').classList.remove('show');
-  }
-
-  async function sendResetEmail() {
-    const email = document.getElementById('reset-email').value.trim();
-    const msgEl = document.getElementById('pw-modal-msg');
-    const btn = document.getElementById('btn-send-reset');
-
-    if (!email) {
-      msgEl.textContent = '이메일을 입력해 주세요.';
-      msgEl.className = 'err';
-      return;
-    }
-
-    btn.disabled = true;
-    btn.textContent = '전송 중…';
-    msgEl.textContent = '';
-
-    try {
-      const res = await fetch(BACKEND_URL + '/auth/forgot-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-
-      if (res.ok) {
-        msgEl.textContent = '재설정 링크를 이메일로 전송했습니다.';
-        msgEl.className = 'ok';
-        btn.textContent = '전송 완료';
-      } else {
-        msgEl.textContent = '전송에 실패했습니다. 이메일을 확인해 주세요.';
-        msgEl.className = 'err';
-        btn.disabled = false;
-        btn.textContent = '전송';
-      }
-    } catch {
-      msgEl.textContent = '네트워크 오류가 발생했습니다.';
-      msgEl.className = 'err';
-      btn.disabled = false;
-      btn.textContent = '전송';
-    }
-  }
-
-  /* ── 모달 바깥 클릭 시 닫기 ── */
-  document.getElementById('pw-modal').addEventListener('click', function(e) {
-    if (e.target === this) closePwModal();
-  });
 </script>
 </body>
 </html>

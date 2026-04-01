@@ -631,38 +631,33 @@
 
   /* ── 네비 인증 상태 ── */
   function updateNavAuth() {
-    const token = localStorage.getItem('accessToken');
-    const link = document.getElementById('nav-auth-link');
+    const token = sessionStorage.getItem('accessToken');
+    const email = sessionStorage.getItem('userEmail');
+    const link  = document.getElementById('nav-auth-link');
     if (token) {
-      link.textContent = '내 정보';
-      link.href = 'mypage.html';
+      // XSS 방지: textContent 사용
+      link.textContent = email ? email : '로그아웃';
+      link.href = '#';
+      link.onclick = function(e) {
+        e.preventDefault();
+        sessionStorage.clear();
+        window.location.href = 'login.html';
+      };
     } else {
       link.textContent = '로그인';
       link.href = 'login.html';
+      link.onclick = null;
     }
   }
 
-  /* ── 토큰 갱신 ── */
+  /* ── 토큰 갱신 (OTP 로그인은 refresh token 없음 → 재로그인 유도) ── */
   async function refreshAccessToken() {
-    const refreshToken = localStorage.getItem('refreshToken');
-    if (!refreshToken) return null;
-    try {
-      const res = await fetch(BACKEND_URL + '/auth/refresh', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ refreshToken }),
-      });
-      if (!res.ok) return null;
-      const data = await res.json();
-      localStorage.setItem('accessToken', data.accessToken);
-      if (data.refreshToken) localStorage.setItem('refreshToken', data.refreshToken);
-      return data.accessToken;
-    } catch { return null; }
+    return null;
   }
 
   /* ── 구독하기 버튼 클릭 ── */
   async function handleSubscribe(plan) {
-    let token = localStorage.getItem('accessToken');
+    let token = sessionStorage.getItem('accessToken');
 
     // 토큰 없으면 로그인 페이지로
     if (!token) {
@@ -819,7 +814,7 @@
     const plan = params.get('plan');
     if (plan && (plan === 'analyst' || plan === 'oracle')) {
       // 로그인 후 리다이렉트 돼서 온 경우 자동으로 결제 시작
-      const token = localStorage.getItem('accessToken');
+      const token = sessionStorage.getItem('accessToken');
       if (token) startPayment(plan, token);
     }
   })();
