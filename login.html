@@ -279,7 +279,7 @@
     if (sessionStorage.getItem('accessToken')) {
       const params = new URLSearchParams(window.location.search);
       const redirect = params.get('redirect');
-      window.location.href = redirect ? decodeURIComponent(redirect) : 'subscribe.html';
+      window.location.href = redirect ? decodeURIComponent(redirect) : 'mypage.html';
     }
   })();
 
@@ -406,7 +406,7 @@
       // 리다이렉트
       const params   = new URLSearchParams(window.location.search);
       const redirect = params.get('redirect');
-      window.location.href = redirect ? decodeURIComponent(redirect) : 'subscribe.html';
+      window.location.href = redirect ? decodeURIComponent(redirect) : 'mypage.html';
 
     } catch (err) {
       console.error('로그인 오류:', err);

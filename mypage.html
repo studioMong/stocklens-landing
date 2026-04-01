@@ -58,6 +58,19 @@
       transition: color .2s;
     }
     .nav-back:hover { color: var(--white); }
+    .nav-auth {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent);
+      padding: 7px 16px;
+      border-radius: 100px;
+      border: 1.5px solid rgba(33,150,243,0.4);
+      transition: background .2s, border-color .2s;
+    }
+    .nav-auth:hover {
+      background: rgba(33,150,243,0.12);
+      border-color: var(--accent);
+    }
 
     /* ── 메인 ── */
     main {
@@ -383,7 +396,7 @@
 
 <nav>
   <a href="index.html" class="nav-logo">Stock<span>Lens</span></a>
-
+  <a id="nav-auth-link" href="login.html" class="nav-auth">로그인</a>
 </nav>
 
 <main>
@@ -720,6 +733,20 @@
   document.getElementById('cancel-modal').addEventListener('click', function(e) {
     if (e.target === this) closeCancelModal();
   });
+
+  /* ── 네비 인증 상태 ── */
+  (function updateNavAuth() {
+    const token = sessionStorage.getItem('accessToken');
+    const link = document.getElementById('nav-auth-link');
+    if (!link) return;
+    if (token) {
+      link.textContent = '내 정보';
+      link.href = 'mypage.html';
+    } else {
+      link.textContent = '로그인';
+      link.href = 'login.html';
+    }
+  })();
 
   /* ── 초기화 ── */
   loadProfile();

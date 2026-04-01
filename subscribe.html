@@ -634,13 +634,9 @@
     const token = sessionStorage.getItem('accessToken');
     const link  = document.getElementById('nav-auth-link');
     if (token) {
-      link.textContent = '로그아웃';
-      link.href = '#';
-      link.onclick = function(e) {
-        e.preventDefault();
-        sessionStorage.clear();
-        window.location.href = 'index.html';
-      };
+      link.textContent = '내 정보';
+      link.href = 'mypage.html';
+      link.onclick = null;
     } else {
       link.textContent = '로그인';
       link.href = 'login.html';
