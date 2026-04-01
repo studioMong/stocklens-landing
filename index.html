@@ -1173,7 +1173,7 @@
 <script>
   /* ── 네비 인증 상태 ── */
   (function updateNavAuth() {
-    const token = localStorage.getItem('accessToken');
+    const token = sessionStorage.getItem('accessToken');
     const link = document.getElementById('nav-auth-link');
     if (!link) return;
     if (token) {

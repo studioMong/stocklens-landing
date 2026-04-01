@@ -497,8 +497,8 @@
   let currentProfile = null;
 
   /* ── 토큰 ── */
-  function getToken() { return localStorage.getItem('accessToken'); }
-  function getRefresh() { return localStorage.getItem('refreshToken'); }
+  function getToken() { return sessionStorage.getItem('accessToken'); }
+  function getRefresh() { return sessionStorage.getItem('refreshToken'); }
 
   /* ── 토큰 갱신 ── */
   async function refreshAccessToken() {
@@ -512,8 +512,8 @@
       });
       if (!res.ok) return null;
       const data = await res.json();
-      localStorage.setItem('accessToken', data.accessToken);
-      if (data.refreshToken) localStorage.setItem('refreshToken', data.refreshToken);
+      sessionStorage.setItem('accessToken', data.accessToken);
+      if (data.refreshToken) sessionStorage.setItem('refreshToken', data.refreshToken);
       return data.accessToken;
     } catch { return null; }
   }
@@ -541,9 +541,9 @@
 
   /* ── 로그인 페이지로 ── */
   function goLogin() {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    window.location.href = 'login.html';
+    sessionStorage.removeItem('accessToken');
+    sessionStorage.removeItem('refreshToken');
+    window.location.href = 'index.html';
   }
 
   /* ── 토스트 ── */
@@ -628,9 +628,9 @@
         }).catch(() => {});
       }
     } finally {
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-      window.location.href = 'login.html';
+      sessionStorage.removeItem('accessToken');
+      sessionStorage.removeItem('refreshToken');
+      window.location.href = 'index.html';
     }
   }
 
