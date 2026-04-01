@@ -725,32 +725,38 @@
     const info = PLANS[plan];
     if (!info) return;
 
-    const priceInfo = info[currentBilling];
-    const paymentId = 'stocklens-' + plan + '-' + currentBilling + '-' + Date.now();
+    // 포트원 결제 키 미설정 시 안내
+    if (!PORTONE_STORE_ID || PORTONE_STORE_ID.includes('XXXX') ||
+        !PORTONE_CHANNEL_KEY || PORTONE_CHANNEL_KEY.includes('XXXX')) {
+      showToast('결제 서비스를 준비 중입니다. 앱에서 구독해 주세요.', 'error');
+      return;
+    }
+
+    if (typeof PortOne === 'undefined') {
+      showToast('결제 모듈 로딩에 실패했습니다. 새로고침 후 다시 시도해 주세요.', 'error');
+      return;
+    }
 
     setLoading(true);
     try {
-      const response = await PortOne.requestPayment({
-        storeId:     PORTONE_STORE_ID,
-        channelKey:  PORTONE_CHANNEL_KEY,
-        paymentId:   paymentId,
-        orderName:   priceInfo.label,
-        totalAmount: priceInfo.amount,
-        currency:    'CURRENCY_KRW',
-        payMethod:   'CARD',
-        customer: { fullName: '', email: '' },
-        redirectUrl: window.location.origin + '/subscribe.html',
+      // 정기결제용 빌링키 발급 (requestPayment 대신 requestIssueBillingKey 사용)
+      const response = await PortOne.requestIssueBillingKey({
+        storeId:          PORTONE_STORE_ID,
+        channelKey:       PORTONE_CHANNEL_KEY,
+        billingKeyMethod: 'CARD',
+        customer:         { email: '' },
+        redirectUrl:      window.location.origin + '/subscribe.html',
       });
 
       setLoading(false);
 
-      if (response.code) {
-        if (response.code === 'FAILURE_TYPE_PG' || response.message?.includes('cancel')) return;
-        showToast('결제 실패: ' + (response.message || response.code), 'error');
+      if (!response || response.code) {
+        if (response && (response.code === 'USER_CANCEL' || response.code === 'FAILURE_TYPE_PG')) return;
+        showToast('카드 등록에 실패했습니다: ' + (response?.message || '알 수 없는 오류'), 'error');
         return;
       }
 
-      await verifyPayment(paymentId, plan, currentBilling, priceInfo.amount, token);
+      await activateSubscription(response.billingKey, plan, currentBilling, token);
 
     } catch (err) {
       setLoading(false);
@@ -760,31 +766,28 @@
     }
   }
 
-  /* ── 백엔드 결제 검증 ── */
-  async function verifyPayment(paymentId, plan, billing, amount, token) {
+  /* ── 백엔드 구독 활성화 ── */
+  async function activateSubscription(billingKey, plan, billing, token) {
+    setLoading(true);
     try {
-      const res = await fetch(BACKEND_URL + '/portone/payment/complete', {
+      const res = await fetch(BACKEND_URL + '/portone/payment/subscribe', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + token,
         },
-        body: JSON.stringify({ paymentId, plan, billing, amount }),
+        body: JSON.stringify({ billingKey, plan, billing }),
       });
 
+      setLoading(false);
+
       if (!res.ok) {
-        // 401 → 토큰 갱신 후 재시도
         if (res.status === 401) {
-          const newToken = await refreshAccessToken();
-          if (newToken) {
-            await verifyPayment(paymentId, plan, billing, amount, newToken);
-            return;
-          }
           window.location.href = 'login.html';
           return;
         }
         const err = await res.json().catch(() => ({}));
-        showToast('결제 검증 실패: ' + (err.message || '서버 오류'), 'error');
+        showToast('구독 처리 실패: ' + (err.message || '서버 오류'), 'error');
         return;
       }
 
@@ -794,7 +797,8 @@
       }, 2000);
 
     } catch (e) {
-      console.error('검증 요청 오류:', e);
+      setLoading(false);
+      console.error('구독 요청 오류:', e);
       showToast('네트워크 오류가 발생했습니다. 결제가 완료됐다면 mdlab@moodilab.kr로 문의해 주세요.', 'error');
     }
   }

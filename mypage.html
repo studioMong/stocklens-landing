@@ -577,8 +577,12 @@
     document.getElementById('profile-email').textContent = profile.email || '';
     document.getElementById('avatar-initial').textContent = name.charAt(0).toUpperCase();
 
-    // 플랜
-    const planKey = (profile.plan || profile.subscriptionPlan || 'starter').toLowerCase();
+    // 플랜 (DB는 'free' = Starter, 'analyst_annual'/'oracle_annual' 처리)
+    const rawPlan = (profile.plan || profile.subscriptionPlan || 'free').toLowerCase();
+    const planKey = rawPlan === 'free' ? 'starter'
+                  : rawPlan.startsWith('analyst') ? 'analyst'
+                  : rawPlan.startsWith('oracle') ? 'oracle'
+                  : rawPlan;
     const meta = PLAN_META[planKey] || PLAN_META.starter;
 
     const iconEl = document.getElementById('plan-icon');
