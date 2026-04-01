@@ -632,11 +632,9 @@
   /* ── 네비 인증 상태 ── */
   function updateNavAuth() {
     const token = sessionStorage.getItem('accessToken');
-    const email = sessionStorage.getItem('userEmail');
     const link  = document.getElementById('nav-auth-link');
     if (token) {
-      // XSS 방지: textContent 사용
-      link.textContent = email ? email : '로그아웃';
+      link.textContent = '로그아웃';
       link.href = '#';
       link.onclick = function(e) {
         e.preventDefault();

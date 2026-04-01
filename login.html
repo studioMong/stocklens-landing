@@ -117,21 +117,6 @@
       color: var(--grey);
       margin-bottom: 8px;
     }
-    input[type="email"] {
-      width: 100%;
-      background: rgba(255,255,255,0.06);
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      padding: 13px 16px;
-      font-size: 15px;
-      color: var(--white);
-      outline: none;
-      transition: border-color .2s;
-      -webkit-appearance: none;
-    }
-    input[type="email"]::placeholder { color: rgba(160,180,200,0.5); }
-    input[type="email"]:focus { border-color: var(--accent); }
-
     /* ── OTP 입력 6칸 ── */
     .otp-wrap {
       display: flex;
@@ -244,7 +229,7 @@
   <div class="login-card">
     <div class="login-logo">Stock<span>Lens</span></div>
     <h1 class="login-title">웹 결제 로그인</h1>
-    <p class="login-sub">앱에서 발급받은 인증코드로 로그인하세요</p>
+    <p class="login-sub">앱에서 발급받은 인증코드 6자리를 입력해주세요</p>
 
     <div class="otp-guide">
       <div class="otp-guide-icon">📱</div>
@@ -255,19 +240,6 @@
     </div>
 
     <form id="login-form" onsubmit="handleLogin(event)" novalidate>
-      <div class="form-group">
-        <label for="email">이메일</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          placeholder="앱 가입 이메일"
-          autocomplete="email"
-          inputmode="email"
-          required
-        />
-      </div>
-
       <div class="form-group">
         <label>인증코드 (6자리)</label>
         <div class="otp-wrap" id="otp-wrap">
@@ -320,12 +292,8 @@
   }
 
   function updateSubmitState() {
-    const emailOk = document.getElementById('email').value.trim().length > 0;
-    const otpOk   = getOtp().length === 6;
-    btn.disabled  = !(emailOk && otpOk);
+    btn.disabled = getOtp().length !== 6;
   }
-
-  document.getElementById('email').addEventListener('input', updateSubmitState);
 
   digits.forEach((el, i) => {
     el.addEventListener('input', function (e) {
@@ -398,10 +366,8 @@
     e.preventDefault();
     clearError();
 
-    const email = document.getElementById('email').value.trim();
-    const otp   = getOtp();
+    const otp = getOtp();
 
-    if (!email) { showError('이메일을 입력해 주세요.'); return; }
     if (otp.length !== 6) { showError('인증코드 6자리를 모두 입력해 주세요.'); return; }
 
     btn.classList.add('loading');
@@ -411,7 +377,7 @@
       const res = await fetch(BACKEND_URL + '/auth/web-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, otp }),
+        body: JSON.stringify({ otp }),
       });
 
       const data = await res.json().catch(() => ({}));
@@ -436,7 +402,6 @@
 
       // sessionStorage에 토큰 저장 (탭 닫으면 만료)
       sessionStorage.setItem('accessToken', data.accessToken);
-      sessionStorage.setItem('userEmail', email);
 
       // 리다이렉트
       const params   = new URLSearchParams(window.location.search);
