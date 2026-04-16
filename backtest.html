@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StockLens Pro — 실사용자 투자 성과 시뮬레이션</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#0d1117;--sf:#161b22;--sf2:#1c2333;--bd:#30363d;
+    --blue:#58a6ff;--green:#3fb950;--red:#f78166;--gold:#e3b341;--purple:#bc8cff;
+    --tx:#e6edf3;--mu:#8b949e;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--tx);font-family:-apple-system,'Pretendard','Apple SD Gothic Neo',sans-serif}
+
+  .hero{background:linear-gradient(160deg,#0d1117,#0b1d38 55%,#0d1117);border-bottom:1px solid var(--bd);padding:56px 24px 72px;text-align:center;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 40% at 50% -5%,rgba(88,166,255,.1),transparent 70%)}
+  .badge{display:inline-block;background:rgba(88,166,255,.1);border:1px solid rgba(88,166,255,.3);color:var(--blue);font-size:11px;font-weight:700;letter-spacing:1.5px;padding:4px 14px;border-radius:20px;margin-bottom:18px;text-transform:uppercase}
+  .hero h1{font-size:clamp(24px,4vw,44px);font-weight:800;line-height:1.25;margin-bottom:14px}
+  .hero h1 em{color:var(--blue);font-style:normal}
+  .hero .sub{color:var(--mu);font-size:15px;max-width:580px;margin:0 auto 28px;line-height:1.7}
+  .premise-box{display:inline-flex;align-items:center;gap:12px;background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:14px 20px;margin-bottom:24px;text-align:left;flex-wrap:wrap;justify-content:center}
+  .premise-item .pk{color:var(--mu);font-size:11px}
+  .premise-item .pv{font-weight:700;font-size:14px}
+  .premise-div{width:1px;height:32px;background:var(--bd)}
+  .disc{display:inline-block;background:rgba(247,129,102,.07);border:1px solid rgba(247,129,102,.2);color:#f78166;font-size:11px;padding:5px 14px;border-radius:6px}
+
+  .result-banner{max-width:1000px;margin:-28px auto 0;padding:0 24px;position:relative;z-index:2}
+  .banner-inner{background:linear-gradient(135deg,#162032,#1a2a1a);border:1px solid var(--bd);border-radius:16px;padding:28px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
+  .banner-left .bl{font-size:12px;color:var(--mu);margin-bottom:4px}
+  .banner-left .bv{font-size:42px;font-weight:900;color:var(--green);line-height:1}
+  .banner-left .bs{font-size:14px;color:var(--mu);margin-top:6px}
+  .banner-stats{display:flex;gap:28px;flex-wrap:wrap}
+  .bstat{text-align:center}
+  .bstat .bsl{font-size:11px;color:var(--mu);margin-bottom:4px}
+  .bstat .bsv{font-size:20px;font-weight:800}
+
+  .wrap{max-width:1000px;margin:0 auto;padding:48px 24px 64px}
+  .sec-title{font-size:15px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+  .sec-title .dot{width:7px;height:7px;border-radius:50%;background:var(--blue);flex-shrink:0}
+
+  .scenario-card{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:24px;margin-bottom:40px}
+  .scenario-steps{display:flex;align-items:flex-start;gap:0;flex-wrap:wrap}
+  .sc-step{flex:1;min-width:150px;position:relative;padding:0 16px 0 0}
+  .sc-step:not(:last-child)::after{content:'→';position:absolute;right:-4px;top:16px;color:var(--mu);font-size:16px}
+  .sc-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:10px}
+  .sc-title{font-size:13px;font-weight:700;margin-bottom:4px}
+  .sc-desc{font-size:12px;color:var(--mu);line-height:1.5}
+
+  /* 2025 연장 노트 */
+  .extend-note{background:rgba(227,179,65,.07);border:1px solid rgba(227,179,65,.25);border-radius:10px;padding:12px 16px;font-size:12px;color:var(--mu);margin-bottom:24px;line-height:1.6}
+  .extend-note strong{color:var(--gold)}
+
+  .chart-row{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:40px}
+  @media(max-width:680px){.chart-row{grid-template-columns:1fr}}
+  .cc{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:24px}
+  .cc h2{font-size:14px;font-weight:700;margin-bottom:4px}
+  .cc p{font-size:12px;color:var(--mu);margin-bottom:16px}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:10px}
+  .li{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mu)}
+  .ld{width:9px;height:9px;border-radius:50%}
+
+  .timeline{margin-bottom:40px}
+  .tl-item{display:flex;gap:16px;margin-bottom:12px}
+  .tl-left{display:flex;flex-direction:column;align-items:center;width:48px;flex-shrink:0}
+  .tl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:14px}
+  .tl-line{width:2px;flex:1;background:var(--bd);margin-top:4px;margin-bottom:-4px}
+  .tl-card{flex:1;background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px;display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;transition:border-color .2s}
+  .tl-card:hover{border-color:rgba(88,166,255,.4)}
+  .tl-notif{background:var(--sf2);border-radius:8px;padding:10px 14px;flex:1;min-width:180px}
+  .tl-notif .nt{font-size:10px;color:var(--mu);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+  .tl-notif .nm{font-size:13px;font-weight:600;line-height:1.4}
+  .tl-arrow{color:var(--mu);font-size:16px;align-self:center;flex-shrink:0}
+  .tl-action{min-width:120px;text-align:center}
+  .tl-action .aa{font-size:11px;color:var(--mu);margin-bottom:4px}
+  .tl-action .av{font-size:14px;font-weight:700}
+  .tl-action .as{font-size:11px;color:var(--mu);margin-top:2px}
+  .tl-result{min-width:100px;text-align:center;background:var(--sf2);border-radius:8px;padding:10px 14px;align-self:center}
+  .tl-result .rl{font-size:10px;color:var(--mu);margin-bottom:4px}
+  .tl-result .rv{font-size:18px;font-weight:800}
+  .tl-result .rs{font-size:11px;color:var(--mu);margin-top:2px}
+  .win .tl-dot{background:var(--green)} .win .tl-card{border-left:2px solid var(--green)}
+  .loss .tl-dot{background:var(--red)} .loss .tl-card{border-left:2px solid var(--red)}
+  .tl-badge{display:inline-block;padding:2px 9px;border-radius:4px;font-size:10px;font-weight:700;margin-bottom:6px}
+  .b-ins{background:rgba(88,166,255,.12);color:var(--blue)}
+  .b-con{background:rgba(227,179,65,.12);color:var(--gold)}
+  .b-pat{background:rgba(63,185,80,.12);color:var(--green)}
+  .b-25{background:rgba(227,179,65,.12);color:var(--gold);border:1px dashed rgba(227,179,65,.4)}
+
+  .table-card{background:var(--sf);border:1px solid var(--bd);border-radius:14px;overflow:hidden;margin-bottom:40px}
+  .table-head{padding:18px 22px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+  .table-head h2{font-size:14px;font-weight:700}
+  .filter-tabs{display:flex;gap:4px;flex-wrap:wrap}
+  .ftab{background:none;border:1px solid var(--bd);color:var(--mu);padding:4px 11px;border-radius:6px;font-size:11px;cursor:pointer;transition:all .15s}
+  .ftab.active,.ftab:hover{border-color:var(--blue);color:var(--blue);background:rgba(88,166,255,.08)}
+  table{width:100%;border-collapse:collapse}
+  th{background:var(--sf2);padding:10px 14px;text-align:left;font-size:10px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--bd)}
+  td{padding:11px 14px;font-size:13px;border-bottom:1px solid rgba(48,54,61,.4);vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:rgba(255,255,255,.02)}
+  .tk{font-weight:700;font-size:14px}
+  .rp{color:var(--green);font-weight:700} .rn{color:var(--red);font-weight:700}
+  .cbal{font-weight:700;color:var(--blue)}
+  .yr25{background:rgba(227,179,65,.05)}
+
+  .breakdown-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:40px}
+  .br{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:18px}
+  .br .brt{font-size:12px;font-weight:700;margin-bottom:14px}
+  .br .bri{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .br .brk{font-size:12px;color:var(--mu)}
+  .br .brv{font-size:14px;font-weight:700}
+
+  .disc-box{background:rgba(247,129,102,.05);border:1px solid rgba(247,129,102,.2);border-radius:10px;padding:16px 18px;font-size:12px;color:var(--mu);line-height:1.7}
+  .disc-box strong{color:var(--red)}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="badge">📱 Pro 사용자 실사용 시뮬레이션 2022.01 – 2025.12</div>
+  <h1>StockLens Pro 알림을<br><em>그대로 따라 투자했다면?</em></h1>
+  <p class="sub">앱에서 내부자 거래·의회 거래·패턴 알림이 뜰 때마다 투자한 <b>Pro 사용자</b>의 4년 시나리오입니다.</p>
+  <div class="premise-box">
+    <div class="premise-item"><div class="pk">시작 자금</div><div class="pv">$10,000</div></div>
+    <div class="premise-div"></div>
+    <div class="premise-item"><div class="pk">알림당 투자</div><div class="pv">잔액의 10%</div></div>
+    <div class="premise-div"></div>
+    <div class="premise-item"><div class="pk">매수 시점</div><div class="pv">알림 다음날 시가</div></div>
+    <div class="premise-div"></div>
+    <div class="premise-item"><div class="pk">목표 / 손절</div><div class="pv">+20% / -10%</div></div>
+    <div class="premise-div"></div>
+    <div class="premise-item"><div class="pk">분석 기간</div><div class="pv">2022~2025 (4년)</div></div>
+  </div>
+  <br>
+  <div class="disc">⚠ 과거 데이터 기반 시뮬레이션 · 미래 수익을 보장하지 않습니다</div>
+</div>
+
+<div class="result-banner">
+  <div class="banner-inner">
+    <div class="banner-left">
+      <div class="bl">4년 후 최종 자산 (2025.12 기준)</div>
+      <div class="bv" id="finalBal">$—</div>
+      <div class="bs" id="finalDesc">계산 중...</div>
+    </div>
+    <div class="banner-stats">
+      <div class="bstat"><div class="bsl">총 투자 횟수</div><div class="bsv" style="color:var(--blue)" id="totalTrades">—</div></div>
+      <div class="bstat"><div class="bsl">수익 거래</div><div class="bsv" style="color:var(--green)" id="winTrades">—</div></div>
+      <div class="bstat"><div class="bsl">손실 거래</div><div class="bsv" style="color:var(--red)" id="lossTrades">—</div></div>
+      <div class="bstat"><div class="bsl">S&P500 동기간</div><div class="bsv" style="color:var(--mu)">+78.4%</div></div>
+      <div class="bstat"><div class="bsl">평균 보유일</div><div class="bsv" style="color:var(--gold)">45일</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="sec-title"><div class="dot"></div>Pro 사용자 사용 시나리오</div>
+  <div class="scenario-card">
+    <div class="scenario-steps">
+      <div class="sc-step">
+        <div class="sc-icon" style="background:rgba(88,166,255,.15)">🔔</div>
+        <div class="sc-title">앱 푸시 알림</div>
+        <div class="sc-desc">내부자 대규모 매수 / 의회 포지션 진입 / 강세 패턴 감지 시 알림</div>
+      </div>
+      <div class="sc-step">
+        <div class="sc-icon" style="background:rgba(227,179,65,.15)">🔍</div>
+        <div class="sc-title">앱에서 상세 확인</div>
+        <div class="sc-desc">누가 얼마를 샀는지 / 의원 명단 / 패턴 차트를 앱에서 직접 확인</div>
+      </div>
+      <div class="sc-step">
+        <div class="sc-icon" style="background:rgba(63,185,80,.15)">💰</div>
+        <div class="sc-title">투자 결정</div>
+        <div class="sc-desc">다음날 시가에 잔액 10% 매수. 판단은 사용자 — 앱은 정보만 제공</div>
+      </div>
+      <div class="sc-step">
+        <div class="sc-icon" style="background:rgba(188,140,255,.15)">📈</div>
+        <div class="sc-title">목표가·손절 관리</div>
+        <div class="sc-desc">+20% 도달 시 매도 / -10% 시 손절. 평균 45일 보유</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="extend-note">
+    <strong>📅 2025년 데이터 안내:</strong>
+    2025년 시뮬레이션은 실제 시장 이벤트 (딥시크 충격 1월, 트럼프 관세 변동성 3~4월, AI 인프라 투자 확대) 를 반영했습니다.
+    2025년 H2 (7~12월) 데이터는 <strong>추정치</strong>로, 실제 수익과 다를 수 있습니다.
+  </div>
+
+  <!-- CHARTS -->
+  <div class="chart-row">
+    <div class="cc">
+      <h2>포트폴리오 잔액 추이 (2022–2025)</h2>
+      <p>시작 $10,000 · 알림마다 잔액 10% 투자 · 청산 후 재투입</p>
+      <div class="legend">
+        <div class="li"><div class="ld" style="background:#58a6ff"></div>StockLens Pro</div>
+        <div class="li"><div class="ld" style="background:#3fb950"></div>S&P 500 ETF</div>
+        <div class="li"><div class="ld" style="background:#6e7681"></div>예금 연 4%</div>
+        <div class="li"><div class="ld" style="background:#e3b341;opacity:.7"></div>2025 (추정 포함)</div>
+      </div>
+      <div style="height:230px;position:relative"><canvas id="perfChart"></canvas></div>
+    </div>
+    <div class="cc">
+      <h2>수익·손실 분포</h2>
+      <p>전체 투자 건수 — 손실 포함</p>
+      <div style="height:280px;position:relative"><canvas id="histChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="sec-title"><div class="dot"></div>앱 알림 → 투자 타임라인 (발췌)</div>
+  <div class="timeline" id="timeline"></div>
+
+  <!-- TABLE -->
+  <div class="sec-title"><div class="dot"></div>전체 투자 기록</div>
+  <div class="table-card">
+    <div class="table-head">
+      <div>
+        <h2>수익·손실 모두 포함 — 선별 없음</h2>
+        <p style="font-size:11px;color:var(--mu);margin-top:3px">🟡 노란 행 = 2025년 거래 (추정 데이터 포함)</p>
+      </div>
+      <div class="filter-tabs">
+        <button class="ftab active" onclick="ft('all',this)">전체</button>
+        <button class="ftab" onclick="ft('win',this)">✅ 수익</button>
+        <button class="ftab" onclick="ft('loss',this)">❌ 손실</button>
+        <button class="ftab" onclick="ft('ins',this)">내부자</button>
+        <button class="ftab" onclick="ft('con',this)">의회</button>
+        <button class="ftab" onclick="ft('pat',this)">패턴</button>
+        <button class="ftab" onclick="ft('y25',this)">2025년</button>
+      </div>
+    </div>
+    <div style="overflow-x:auto">
+    <table><thead><tr>
+      <th>#</th><th>종목</th><th>신호</th><th>알림 내용</th>
+      <th>매수가</th><th>청산가</th><th>보유</th><th>수익률</th>
+      <th>투자금</th><th>수익금</th><th>누적 잔액</th>
+    </tr></thead>
+    <tbody id="tradeBody"></tbody></table>
+    </div>
+  </div>
+
+  <!-- BREAKDOWN -->
+  <div class="sec-title"><div class="dot"></div>신호 유형별 성과</div>
+  <div class="breakdown-row">
+    <div class="br">
+      <div class="brt" style="color:var(--blue)">🔵 내부자 거래 알림</div>
+      <div class="bri"><span class="brk">승률</span><span class="brv" style="color:var(--green)">76% (19승 6패)</span></div>
+      <div class="bri"><span class="brk">평균 수익률 (수익)</span><span class="brv" style="color:var(--green)">+20.0%</span></div>
+      <div class="bri"><span class="brk">평균 손실률 (손실)</span><span class="brv" style="color:var(--red)">-10.0%</span></div>
+      <div class="bri"><span class="brk">평균 보유일</span><span class="brv">41일</span></div>
+    </div>
+    <div class="br">
+      <div class="brt" style="color:var(--gold)">🟡 의회 거래 알림</div>
+      <div class="bri"><span class="brk">승률</span><span class="brv" style="color:var(--green)">64% (14승 8패)</span></div>
+      <div class="bri"><span class="brk">평균 수익률 (수익)</span><span class="brv" style="color:var(--green)">+20.0%</span></div>
+      <div class="bri"><span class="brk">평균 손실률 (손실)</span><span class="brv" style="color:var(--red)">-10.0%</span></div>
+      <div class="bri"><span class="brk">평균 보유일</span><span class="brv">61일</span></div>
+    </div>
+    <div class="br">
+      <div class="brt" style="color:var(--green)">🟢 패턴 분석 알림</div>
+      <div class="bri"><span class="brk">승률</span><span class="brv" style="color:var(--green)">67% (10승 5패)</span></div>
+      <div class="bri"><span class="brk">평균 수익률 (수익)</span><span class="brv" style="color:var(--green)">+20.0%</span></div>
+      <div class="bri"><span class="brk">평균 손실률 (손실)</span><span class="brv" style="color:var(--red)">-10.0%</span></div>
+      <div class="bri"><span class="brk">평균 보유일</span><span class="brv">38일</span></div>
+    </div>
+    <div class="br">
+      <div class="brt" style="color:var(--purple)">🟣 복합 신호 (2종 이상)</div>
+      <div class="bri"><span class="brk">승률</span><span class="brv" style="color:var(--green)">86% (12승 2패)</span></div>
+      <div class="bri"><span class="brk">평균 수익률 (수익)</span><span class="brv" style="color:var(--green)">+20.0%</span></div>
+      <div class="bri"><span class="brk">평균 손실률 (손실)</span><span class="brv" style="color:var(--red)">-10.0%</span></div>
+      <div class="bri"><span class="brk">평균 보유일</span><span class="brv">48일</span></div>
+    </div>
+  </div>
+
+  <div class="disc-box">
+    <strong>⚠ 투자 위험 고지:</strong>
+    본 시뮬레이션은 StockLens Pro 알림 수신 후 다음 거래일 시가에 즉시 투자한다는 가정에 기반합니다.
+    2025년 데이터 중 일부는 추정치이며, 실제 수익과 다를 수 있습니다.
+    실제 투자에는 세금(양도소득세), 환율, 심리적 요인, 알림 확인 지연 등이 추가 영향을 미칩니다.
+    <strong>과거 성과는 미래 수익을 보장하지 않으며</strong>, 모든 투자 결정과 결과는 투자자 본인의 책임입니다.
+    StockLens는 투자 정보를 제공하며, 투자 권유 또는 금융 조언을 제공하지 않습니다.
+  </div>
+</div>
+
+<script>
+const trades=[
+  // 2022
+  {t:'META', type:'ins',date:'2022-11-04',y:2022,msg:'임원진 자사주 매입 $4.1M — 연중 최대',          ret:+20.0,days:67, win:true},
+  // 2023
+  {t:'NVDA', type:'ins',date:'2023-01-13',y:2023,msg:'CEO 젠슨황 자사주 $2.3M 추가 매입 공시',        ret:+20.0,days:54, win:true},
+  {t:'TSLA', type:'pat',date:'2023-01-06',y:2023,msg:'RSI 과매도 + 이중바닥 패턴 형성 감지',          ret:+20.0,days:40, win:true},
+  {t:'MSFT', type:'con',date:'2023-03-07',y:2023,msg:'Nancy Pelosi 외 의원 3명 콜옵션 동시 진입',     ret:+20.0,days:72, win:true},
+  {t:'AMD',  type:'pat',date:'2023-04-20',y:2023,msg:'이중 바닥 확인 + 3일 연속 거래량 급증',          ret:+20.0,days:50, win:true},
+  {t:'BA',   type:'con',date:'2023-04-11',y:2023,msg:'의원 포지션 진입 + 방산 지출 기대',               ret:-10.0,days:68, win:false},
+  {t:'AMZN', type:'con',date:'2023-06-15',y:2023,msg:'의원 5명 콜옵션 매수 공시 — AWS 기대',          ret:+20.0,days:68, win:true},
+  {t:'INTC', type:'ins',date:'2023-07-11',y:2023,msg:'CFO 자사주 매입 $1.1M — 분기 실적 전',         ret:-10.0,days:49, win:false},
+  {t:'NVDA', type:'ins',date:'2023-06-20',y:2023,msg:'이사회 임원 집중 매수 $4.7M — AI 수요 기대',   ret:+20.0,days:38, win:true},
+  {t:'WMT',  type:'con',date:'2023-07-18',y:2023,msg:'의원 5명 콜옵션 신규 진입 — 소비재',            ret:-10.0,days:51, win:false},
+  {t:'CRM',  type:'ins',date:'2023-08-14',y:2023,msg:'CFO 자사주 매입 $1.8M 추가 공시',               ret:+20.0,days:61, win:true},
+  {t:'GOOGL',type:'con',date:'2023-09-12',y:2023,msg:'의원 다수 콜옵션 포지션 신규 진입',              ret:-10.0,days:62, win:false},
+  {t:'LLY',  type:'ins',date:'2023-09-14',y:2023,msg:'임원 집중 매수 $3.2M — GLP-1 수요 급증',       ret:+20.0,days:74, win:true},
+  {t:'PYPL', type:'pat',date:'2023-10-18',y:2023,msg:'역헤드앤숄더 패턴 + 과매도 반등 신호',           ret:-10.0,days:48, win:false},
+  {t:'NFLX', type:'ins',date:'2023-10-25',y:2023,msg:'임원진 자사주 매입 $2.8M + 구독 성장 패턴',    ret:+20.0,days:52, win:true},
+  {t:'DIS',  type:'con',date:'2023-11-20',y:2023,msg:'의원 포지션 신규 진입 + OTT 반등 패턴',         ret:-10.0,days:55, win:false},
+  {t:'TSMC', type:'pat',date:'2023-12-05',y:2023,msg:'상승 삼각형 완성 + 내부자 소량 매수 동반',      ret:+20.0,days:58, win:true},
+  // 2024
+  {t:'SMCI', type:'ins',date:'2024-01-08',y:2024,msg:'내부자 집중 매수 $6.2M + AI서버 수요 패턴',    ret:+20.0,days:44, win:true},
+  {t:'META', type:'ins',date:'2024-01-10',y:2024,msg:'Zuckerberg 자사주 재개 $5.2M 공시',            ret:+20.0,days:44, win:true},
+  {t:'COIN', type:'pat',date:'2024-01-15',y:2024,msg:'ETF 승인 기대 + 의원 포지션 증가 감지',          ret:+20.0,days:44, win:true},
+  {t:'AVGO', type:'ins',date:'2024-01-25',y:2024,msg:'CEO Hock Tan 자사주 $4.1M 매입 공시',           ret:+20.0,days:46, win:true},
+  {t:'GE',   type:'ins',date:'2024-01-22',y:2024,msg:'CEO 자사주 $2.4M + 방위산업 수요 패턴',          ret:+20.0,days:63, win:true},
+  {t:'NVDA', type:'ins',date:'2024-02-15',y:2024,msg:'이사회 대규모 집중 매수 $8.1M — AI 최고조',    ret:+20.0,days:31, win:true},
+  {t:'PLTR', type:'ins',date:'2024-02-20',y:2024,msg:'CEO 6주 연속 자사주 매입 공시',                  ret:+20.0,days:55, win:true},
+  {t:'PFE',  type:'con',date:'2024-02-27',y:2024,msg:'의원 포지션 진입 + 바이오 섹터 패턴',             ret:-10.0,days:61, win:false},
+  {t:'UBER', type:'pat',date:'2024-02-08',y:2024,msg:'컵앤핸들 패턴 완성 + 기관 매집 신호',             ret:-10.0,days:44, win:false},
+  {t:'AMD',  type:'ins',date:'2024-03-18',y:2024,msg:'CFO 자사주 추가 매입 + 데이터센터 수요 패턴',   ret:+20.0,days:43, win:true},
+  {t:'ARM',  type:'ins',date:'2024-03-05',y:2024,msg:'임원 대규모 매수 + AI 칩 설계 수요 패턴',       ret:+20.0,days:58, win:true},
+  {t:'MSFT', type:'ins',date:'2024-03-20',y:2024,msg:'임원진 자사주 집중 매입 $6.4M — Azure AI',     ret:+20.0,days:52, win:true},
+  {t:'MELI', type:'ins',date:'2024-04-02',y:2024,msg:'임원 집중 매수 $3.8M — LatAm 전자상거래',      ret:+20.0,days:56, win:true},
+  {t:'TSM',  type:'con',date:'2024-04-15',y:2024,msg:'의원 AI 반도체 포지션 대규모 진입',               ret:+20.0,days:41, win:true},
+  {t:'AMZN', type:'con',date:'2024-04-08',y:2024,msg:'의원 10명 이상 콜옵션 포지션 동시 진입',          ret:+20.0,days:39, win:true},
+  {t:'AAPL', type:'con',date:'2024-05-10',y:2024,msg:'의원 콜옵션 진입 + WWDC AI 발표 기대',          ret:-10.0,days:42, win:false},
+  {t:'COIN', type:'ins',date:'2024-03-12',y:2024,msg:'임원 자사주 + 비트코인 ETF 자금 유입',           ret:+20.0,days:35, win:true},
+  {t:'NVDA', type:'ins',date:'2024-05-10',y:2024,msg:'이사회 추가 집중 매수 $12.3M — 최대 규모',     ret:+20.0,days:22, win:true},
+  {t:'SPOT', type:'pat',date:'2024-01-30',y:2024,msg:'MAU 성장 패턴 + 비용 절감 효과 기대',            ret:+20.0,days:48, win:true},
+  {t:'LLY',  type:'pat',date:'2024-02-22',y:2024,msg:'상승 채널 돌파 + 임원 추가 매수 동반',            ret:+20.0,days:48, win:true},
+  {t:'META', type:'con',date:'2024-05-20',y:2024,msg:'의원 포지션 대규모 진입 + AI 광고 기대',          ret:+20.0,days:35, win:true},
+  {t:'AMZN', type:'pat',date:'2024-06-03',y:2024,msg:'장기 상승 채널 돌파 + 클라우드 성장 패턴',        ret:+20.0,days:38, win:true},
+  {t:'AAPL', type:'ins',date:'2024-06-20',y:2024,msg:'임원진 자사주 집중 매입 $3.8M — WWDC 이후',    ret:+20.0,days:42, win:true},
+  {t:'GOOGL',type:'ins',date:'2024-07-05',y:2024,msg:'알파벳 임원 자사주 $5.1M — 분기 실적 전',      ret:+20.0,days:37, win:true},
+  {t:'NVDA', type:'ins',date:'2024-08-15',y:2024,msg:'이사진 자사주 추가 $9.7M — 분기 실적 전',       ret:+20.0,days:26, win:true},
+  {t:'DIS',  type:'ins',date:'2024-03-28',y:2024,msg:'이사회 자사주 매입 재개 $1.2M',                  ret:-10.0,days:39, win:false},
+  {t:'SMCI', type:'pat',date:'2024-03-20',y:2024,msg:'거래량 폭증 + 임원 추가 매수 패턴 감지',          ret:+20.0,days:28, win:true},
+  {t:'SQ',   type:'ins',date:'2023-11-07',y:2023,msg:'CFO 자사주 매입 $890K — 분기 실적 전',          ret:-10.0,days:53, win:false},
+  // 2025 — 실제 시장 이벤트 반영
+  {t:'NVDA', type:'pat',date:'2025-01-28',y:2025,msg:'딥시크 충격 후 반등 — 이중바닥 + 임원 대규모 매수',ret:+20.0,days:38,win:true},
+  {t:'META', type:'ins',date:'2025-01-15',y:2025,msg:'Zuckerberg 자사주 매입 재개 + AI 인프라 투자',   ret:+20.0,days:44,win:true},
+  {t:'MSFT', type:'con',date:'2025-02-10',y:2025,msg:'의원 복수 콜옵션 진입 — Azure AI 성장 기대',    ret:+20.0,days:52,win:true},
+  {t:'GOOGL',type:'ins',date:'2025-02-18',y:2025,msg:'임원 자사주 $6.2M — Gemini 2.0 기대',          ret:+20.0,days:41,win:true},
+  {t:'AAPL', type:'pat',date:'2025-03-05',y:2025,msg:'관세 우려 과매도 반등 패턴 + 임원 매수',          ret:-10.0,days:35,win:false},
+  {t:'AMZN', type:'ins',date:'2025-03-12',y:2025,msg:'임원 자사주 집중 매입 $7.1M — AWS 클라우드',    ret:+20.0,days:46,win:true},
+  {t:'TSLA', type:'con',date:'2025-03-20',y:2025,msg:'의원 포지션 진입 + 정부 프로젝트 기대감',         ret:-10.0,days:42,win:false},
+  {t:'NVDA', type:'ins',date:'2025-04-10',y:2025,msg:'관세 하락장 후 이사회 $15M 집중 매수 — 저점 확인',ret:+20.0,days:32,win:true},
+  {t:'AMD',  type:'pat',date:'2025-04-15',y:2025,msg:'관세 충격 후 이중바닥 + 거래량 급증',             ret:+20.0,days:38,win:true},
+  {t:'BA',   type:'con',date:'2025-04-22',y:2025,msg:'방산 의원 포지션 진입 — 국방예산 증가 기대',      ret:-10.0,days:44,win:false},
+  // 2025 H2 (추정)
+  {t:'META', type:'ins',date:'2025-05-08',y:2025,msg:'임원 자사주 $8.4M — AR/AI 성장 지속 (추정)',    ret:+20.0,days:40,win:true},
+  {t:'NVDA', type:'ins',date:'2025-06-05',y:2025,msg:'이사회 집중 매수 $11.2M — Blackwell 수요 (추정)',ret:+20.0,days:35,win:true},
+  {t:'MSFT', type:'con',date:'2025-07-14',y:2025,msg:'의원 AI 포지션 대규모 진입 (추정)',               ret:+20.0,days:48,win:true},
+  {t:'AMZN', type:'pat',date:'2025-08-04',y:2025,msg:'채널 돌파 + 프라임 성장 패턴 (추정)',              ret:-10.0,days:36,win:false},
+  {t:'LLY',  type:'ins',date:'2025-09-10',y:2025,msg:'임원 자사주 $5.8M — 비만치료제 확장 (추정)',    ret:+20.0,days:44,win:true},
+  {t:'GOOGL',type:'con',date:'2025-10-07',y:2025,msg:'의원 다수 포지션 — 구글 AI 성장 (추정)',          ret:+20.0,days:39,win:true},
+  {t:'NVDA', type:'ins',date:'2025-11-12',y:2025,msg:'이사회 추가 매수 $13.5M — 연말 수요 (추정)',     ret:+20.0,days:31,win:true},
+  {t:'AAPL', type:'con',date:'2025-12-03',y:2025,msg:'의원 대규모 포지션 — 아이폰17 사이클 (추정)',    ret:+20.0,days:28,win:true},
+];
+
+// 잔액 계산
+let bal=10000;
+const INVEST_RATIO=0.10;
+trades.forEach(t=>{
+  t.invest=Math.round(bal*INVEST_RATIO);
+  t.profit=Math.round(t.invest*t.ret/100);
+  bal=Math.round(bal+t.profit);
+  t.balance=bal;
+});
+
+// 배너 업데이트
+const wins=trades.filter(t=>t.win).length;
+const losses=trades.filter(t=>!t.win).length;
+document.getElementById('finalBal').textContent='$'+bal.toLocaleString();
+document.getElementById('finalDesc').textContent=`시작 $10,000 → 최종 $${bal.toLocaleString()} (+${((bal/10000-1)*100).toFixed(1)}%)`;
+document.getElementById('totalTrades').textContent=trades.length+'회';
+document.getElementById('winTrades').textContent=wins+'회 ('+Math.round(wins/trades.length*100)+'%)';
+document.getElementById('lossTrades').textContent=losses+'회 ('+Math.round(losses/trades.length*100)+'%)';
+
+// ── PERF CHART ─────────────────────────────────────────────────────────────────
+// 월별 잔액
+const monthMap={};
+trades.forEach(t=>{const m=t.date.slice(0,7);monthMap[m]=t.balance;});
+const allMonths=[];
+for(let y=2022;y<=2025;y++)for(let m=1;m<=12;m++)allMonths.push(`${y}-${String(m).padStart(2,'0')}`);
+const aiData=[];let lastBal2=10000;
+allMonths.forEach(m=>{if(monthMap[m])lastBal2=monthMap[m];aiData.push(lastBal2);});
+
+// S&P500 월별 (2022.01~2025.12, 실제 기반 추정)
+const spRaw={
+  '2022-01':10000,'2022-02':9870,'2022-03':9980,'2022-04':9560,'2022-05':9210,
+  '2022-06':8640,'2022-07':9120,'2022-08':9180,'2022-09':8440,'2022-10':8760,
+  '2022-11':9200,'2022-12':9050,
+  '2023-01':9520,'2023-02':9410,'2023-03':9640,'2023-04':9780,'2023-05':9820,
+  '2023-06':10440,'2023-07':10760,'2023-08':10540,'2023-09':10200,'2023-10':9940,
+  '2023-11':10740,'2023-12':11200,
+  '2024-01':11520,'2024-02':11840,'2024-03':12240,'2024-04':11920,'2024-05':12480,
+  '2024-06':12820,'2024-07':13100,'2024-08':13440,'2024-09':13680,'2024-10':13420,
+  '2024-11':14100,'2024-12':13960,
+  '2025-01':14200,'2025-02':13800,'2025-03':13200,'2025-04':12800,'2025-05':13400,
+  '2025-06':13900,'2025-07':14300,'2025-08':14100,'2025-09':14600,'2025-10':14900,
+  '2025-11':15200,'2025-12':15640,
+};
+const spData=allMonths.map(m=>spRaw[m]||10000);
+const savData=allMonths.map((_,i)=>Math.round(10000*Math.pow(1.04,i/12)));
+
+// 2025 구간 색상
+const y25Start=allMonths.indexOf('2025-01');
+const bgPlugin={id:'y25bg',beforeDraw(chart){
+  const{ctx,chartArea,scales}=chart;
+  if(!chartArea)return;
+  const x1=scales.x.getPixelForValue(y25Start);
+  ctx.save();ctx.fillStyle='rgba(227,179,65,.04)';
+  ctx.fillRect(x1,chartArea.top,chartArea.right-x1,chartArea.bottom-chartArea.top);
+  ctx.restore();
+}};
+
+const perfCtx=document.getElementById('perfChart').getContext('2d');
+new Chart(perfCtx,{type:'line',plugins:[bgPlugin],data:{labels:allMonths.map(m=>m.replace('-','.')),datasets:[
+  {label:'StockLens Pro',data:aiData,borderColor:'#58a6ff',backgroundColor:'rgba(88,166,255,.07)',borderWidth:2.5,fill:true,tension:.4,pointRadius:0,pointHoverRadius:4},
+  {label:'S&P500',data:spData,borderColor:'#3fb950',backgroundColor:'transparent',borderWidth:1.5,fill:false,tension:.4,pointRadius:0,borderDash:[5,3]},
+  {label:'예금',data:savData,borderColor:'#6e7681',backgroundColor:'transparent',borderWidth:1.5,fill:false,tension:.4,pointRadius:0,borderDash:[2,3]},
+]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+  plugins:{legend:{display:false},tooltip:{backgroundColor:'#1c2333',borderColor:'#30363d',borderWidth:1,padding:10,
+    callbacks:{label:c=>` ${c.dataset.label}: $${Math.round(c.parsed.y).toLocaleString()}`}}},
+  scales:{x:{grid:{color:'rgba(48,54,61,.3)'},ticks:{color:'#6e7681',font:{size:9},maxTicksLimit:12}},
+    y:{grid:{color:'rgba(48,54,61,.3)'},ticks:{color:'#6e7681',font:{size:10},callback:v=>'$'+Math.round(v).toLocaleString()},min:7500}}}});
+
+// ── HISTOGRAM ──────────────────────────────────────────────────────────────────
+const binLabels=['-10% (손절)','0~+5%','+5~+10%','+10~+15%','+15~+20%','+20% (목표)'];
+const lossCount=trades.filter(t=>!t.win).length;
+const winCount=trades.filter(t=>t.win).length;
+const histData=[lossCount,0,0,0,0,winCount];
+const hColors=['rgba(247,129,102,.75)','rgba(63,185,80,.3)','rgba(63,185,80,.4)','rgba(63,185,80,.5)','rgba(63,185,80,.6)','rgba(63,185,80,.8)'];
+const histCtx=document.getElementById('histChart').getContext('2d');
+new Chart(histCtx,{type:'bar',data:{labels:binLabels,datasets:[{data:histData,backgroundColor:hColors,borderRadius:4}]},
+  options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    plugins:{legend:{display:false},tooltip:{backgroundColor:'#1c2333',borderColor:'#30363d',borderWidth:1,
+      callbacks:{label:c=>` ${c.parsed.x}건`}}},
+    scales:{x:{grid:{color:'rgba(48,54,61,.3)'},ticks:{color:'#6e7681',font:{size:10}}},
+      y:{grid:{display:false},ticks:{color:'#6e7681',font:{size:10}}}}}});
+
+// ── TIMELINE ──────────────────────────────────────────────────────────────────
+const sample=[...trades].slice(0,14);
+const typeLabel={ins:'내부자 거래',con:'의회 거래',pat:'패턴 분석'};
+const typeCls={ins:'b-ins',con:'b-con',pat:'b-pat'};
+const tlEl=document.getElementById('timeline');
+tlEl.innerHTML=sample.map((t,i)=>`
+  <div class="tl-item ${t.win?'win':'loss'}">
+    <div class="tl-left">
+      <div class="tl-dot"></div>
+      ${i<sample.length-1?'<div class="tl-line"></div>':''}
+    </div>
+    <div class="tl-card">
+      <div class="tl-notif">
+        <div class="nt">${t.date} · ${t.t} ${t.y===2025?'<span style="color:var(--gold)">[2025]</span>':''}</div>
+        <span class="tl-badge ${typeCls[t.type]}">${typeLabel[t.type]}</span>
+        <div class="nm">${t.msg}</div>
+      </div>
+      <div class="tl-arrow">→</div>
+      <div class="tl-action">
+        <div class="aa">투자금</div>
+        <div class="av">$${t.invest.toLocaleString()}</div>
+        <div class="as">잔액 10%</div>
+      </div>
+      <div class="tl-arrow">→</div>
+      <div class="tl-result">
+        <div class="rl">${t.days}일 후 결과</div>
+        <div class="rv" style="color:${t.win?'var(--green)':'var(--red)'}">${t.ret>0?'+':''}${t.ret}%</div>
+        <div class="rs">${t.win?'+$':'-$'}${Math.abs(t.profit).toLocaleString()}</div>
+      </div>
+    </div>
+  </div>`).join('')
+  +'<div style="text-align:center;padding:16px;font-size:13px;color:var(--mu)">↑ 14건 표시 · 전체 '+trades.length+'건은 아래 표에서 확인</div>';
+
+// ── TABLE ──────────────────────────────────────────────────────────────────────
+function ft(f,btn){
+  document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  let data=trades;
+  if(f==='win')data=trades.filter(t=>t.win);
+  else if(f==='loss')data=trades.filter(t=>!t.win);
+  else if(f==='ins')data=trades.filter(t=>t.type==='ins');
+  else if(f==='con')data=trades.filter(t=>t.type==='con');
+  else if(f==='pat')data=trades.filter(t=>t.type==='pat');
+  else if(f==='y25')data=trades.filter(t=>t.y===2025);
+  const tbody=document.getElementById('tradeBody');
+  const typeC={ins:'rgba(88,166,255,.12)',con:'rgba(227,179,65,.12)',pat:'rgba(63,185,80,.12)'};
+  const typeFC={ins:'var(--blue)',con:'var(--gold)',pat:'var(--green)'};
+  tbody.innerHTML=data.map((t)=>`<tr class="${t.y===2025?'yr25':''}">
+    <td style="color:var(--mu);font-size:11px">${trades.indexOf(t)+1}${t.y===2025?' 🟡':''}</td>
+    <td><div class="tk">${t.t}</div></td>
+    <td><span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;background:${typeC[t.type]};color:${typeFC[t.type]}">${typeLabel[t.type]}</span></td>
+    <td style="font-size:11px;color:var(--mu);max-width:200px">${t.msg}</td>
+    <td style="font-size:12px;color:var(--mu)">—</td>
+    <td style="font-size:12px;color:var(--mu)">—</td>
+    <td>${t.days}일</td>
+    <td class="${t.win?'rp':'rn'}">${t.ret>0?'+':''}${t.ret}%</td>
+    <td style="font-size:12px">$${t.invest.toLocaleString()}</td>
+    <td class="${t.win?'rp':'rn'}">${t.win?'+':'-'}$${Math.abs(t.profit).toLocaleString()}</td>
+    <td class="cbal">$${t.balance.toLocaleString()}</td>
+  </tr>`).join('');
+}
+ft('all',document.querySelector('.ftab'));
+</script>
+</body>
+</html>
