@@ -3,255 +3,143 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>개인정보처리방침 — StockLens</title>
+  <title>개인정보처리방침 | StockLens</title>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      background: #042C53;
-      color: #e0e8f0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
-      line-height: 1.7;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background: #0d0d0d;
+      color: #e0e0e0;
+      line-height: 1.8;
+      padding: 40px 20px;
     }
-    .header {
-      background: rgba(0,0,0,0.2);
-      padding: 20px 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
-    .header a { color: #6db3f8; text-decoration: none; font-size: 14px; }
-    .header a:hover { text-decoration: underline; }
-    .logo { font-size: 20px; font-weight: 700; color: #fff; }
-    .logo span { color: #2196F3; }
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 60px 24px 80px;
-    }
-    h1 { font-size: 32px; font-weight: 800; color: #fff; margin-bottom: 8px; }
-    .updated { font-size: 14px; color: #8aa6be; margin-bottom: 48px; }
-    h2 {
-      font-size: 20px;
-      font-weight: 700;
-      color: #fff;
-      margin: 40px 0 16px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-    p { font-size: 15px; color: #c0d0e0; margin-bottom: 14px; }
-    ul { padding-left: 20px; margin-bottom: 14px; }
-    ul li { font-size: 15px; color: #c0d0e0; margin-bottom: 8px; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 16px 0 24px;
-      font-size: 14px;
-    }
-    th {
-      background: rgba(33,150,243,0.15);
-      color: #fff;
-      text-align: left;
-      padding: 12px 16px;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-    td {
-      padding: 12px 16px;
-      border: 1px solid rgba(255,255,255,0.07);
-      color: #c0d0e0;
-      vertical-align: top;
-    }
-    tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
-    .highlight-box {
-      background: rgba(33,150,243,0.08);
-      border: 1px solid rgba(33,150,243,0.2);
-      border-radius: 12px;
-      padding: 20px 24px;
-      margin: 16px 0;
-      font-size: 15px;
-      color: #c0d0e0;
-    }
-    footer {
-      text-align: center;
-      padding: 32px;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      font-size: 13px;
-      color: #6a8aaa;
-    }
-    a { color: #6db3f8; }
-    a:hover { text-decoration: underline; }
+    .container { max-width: 800px; margin: 0 auto; }
+    .logo { font-size: 24px; font-weight: 700; color: #ffffff; margin-bottom: 40px; display: block; text-decoration: none; }
+    h1 { font-size: 28px; font-weight: 700; color: #ffffff; margin-bottom: 8px; }
+    .updated { font-size: 14px; color: #888; margin-bottom: 40px; }
+    h2 { font-size: 18px; font-weight: 600; color: #ffffff; margin-top: 40px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #2a2a2a; }
+    p { font-size: 15px; color: #c0c0c0; margin-bottom: 12px; }
+    ul { padding-left: 20px; margin-bottom: 12px; }
+    li { font-size: 15px; color: #c0c0c0; margin-bottom: 6px; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 14px; }
+    th { background: #1e1e1e; color: #ffffff; padding: 10px 14px; text-align: left; border: 1px solid #2a2a2a; }
+    td { padding: 10px 14px; border: 1px solid #2a2a2a; color: #c0c0c0; vertical-align: top; }
+    .highlight { background: #1a1a2e; border-left: 3px solid #4a90e2; padding: 16px 20px; border-radius: 4px; margin-bottom: 16px; }
+    .highlight p { margin-bottom: 4px; }
+    footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid #2a2a2a; font-size: 13px; color: #666; }
+    a { color: #4a90e2; }
   </style>
 </head>
 <body>
+  <div class="container">
+    <a class="logo" href="/">StockLens</a>
+    <h1>개인정보처리방침</h1>
+    <p class="updated">시행일: 2026년 5월 15일 &nbsp;|&nbsp; 최종 수정일: 2026년 5월 15일</p>
 
-<div class="header">
-  <div class="logo">Stock<span>Lens</span></div>
-  <a href="/">← 홈으로 돌아가기</a>
-</div>
+    <div class="highlight">
+      <p>주식회사 스튜디오몽(이하 "회사")은 「개인정보 보호법」 및 관련 법령에 따라 이용자의 개인정보를 보호하고, 이와 관련한 고충을 신속하고 원활하게 처리할 수 있도록 다음과 같이 개인정보처리방침을 수립·공개합니다.</p>
+    </div>
 
-<div class="container">
-  <h1>개인정보처리방침</h1>
-  <p class="updated">시행일: 2026년 4월 14일 &nbsp;|&nbsp; 최종 수정: 2026년 4월 14일</p>
+    <h2>제1조 (개인정보의 처리 목적)</h2>
+    <p>회사는 다음의 목적을 위하여 개인정보를 처리합니다. 처리하는 개인정보는 다음 목적 이외의 용도로는 이용되지 않으며, 목적이 변경될 경우 사전 동의를 받겠습니다.</p>
+    <ul>
+      <li>회원 가입·관리 및 본인 확인</li>
+      <li>서비스(StockLens) 제공 및 운영</li>
+      <li>구독 결제 처리 및 관련 고객 지원</li>
+      <li>서비스 개선, 오류 진단 및 통계 분석</li>
+      <li>법령상 의무 이행 및 분쟁 해결</li>
+      <li>공지사항 및 서비스 관련 중요 안내 발송</li>
+    </ul>
 
-  <p>
-    스튜디오몽(이하 "회사")은 <strong>StockLens</strong> 서비스(이하 "서비스")를 운영하면서 이용자의 개인정보를 중요하게 생각합니다.
-    본 개인정보처리방침은 「개인정보 보호법」 및 관련 법령에 따라 이용자의 개인정보가 어떻게 수집·이용·보관·파기되는지를 안내합니다.
-  </p>
+    <h2>제2조 (처리하는 개인정보의 항목)</h2>
+    <table>
+      <tr><th>수집 경로</th><th>수집 항목</th><th>수집 근거</th></tr>
+      <tr><td>Apple 로그인</td><td>이메일 주소, 이름(선택), Apple 고유 식별자</td><td>계약 이행</td></tr>
+      <tr><td>서비스 이용</td><td>기기 고유 식별자, OS 버전, 앱 버전, 접속 로그, 서비스 이용 기록</td><td>정당한 이익</td></tr>
+      <tr><td>구독 결제</td><td>구독 상태, 영수증 정보 (Apple In-App Purchase 처리)</td><td>계약 이행</td></tr>
+      <tr><td>고객 문의</td><td>이메일 주소, 문의 내용</td><td>동의</td></tr>
+    </table>
+    <p>* 결제 카드 정보 등 민감한 금융 정보는 Apple을 통해 처리되며 회사 서버에 저장되지 않습니다.</p>
 
-  <!-- 1 -->
-  <h2>1. 수집하는 개인정보 항목 및 수집 방법</h2>
-  <table>
-    <tr><th>구분</th><th>수집 항목</th><th>수집 목적</th></tr>
-    <tr>
-      <td>Apple 로그인</td>
-      <td>이메일 주소(선택), 사용자 식별자(Sub)</td>
-      <td>회원 가입 및 로그인 인증</td>
-    </tr>
-    <tr>
-      <td>Google 로그인</td>
-      <td>이메일 주소, 프로필 이름, Google 사용자 ID</td>
-      <td>회원 가입 및 로그인 인증</td>
-    </tr>
-    <tr>
-      <td>서비스 이용</td>
-      <td>관심 종목 목록, AI 분석 조회 기록, 플랜 정보</td>
-      <td>서비스 제공 및 한도 관리</td>
-    </tr>
-    <tr>
-      <td>결제</td>
-      <td>Apple 구독 영수증 (Apple이 처리, 회사는 결과만 수신)</td>
-      <td>Pro 플랜 구독 확인 및 관리</td>
-    </tr>
-    <tr>
-      <td>기기 정보</td>
-      <td>기기 고유 식별자(Keychain UUID), OS 버전</td>
-      <td>중복 이용 방지 및 기술 지원</td>
-    </tr>
-    <tr>
-      <td>자동 수집</td>
-      <td>앱 오류 로그 (Firebase Crashlytics)</td>
-      <td>서비스 안정성 개선</td>
-    </tr>
-  </table>
-  <p>회사는 만 14세 미만 아동의 개인정보를 수집하지 않습니다.</p>
+    <h2>제3조 (개인정보의 처리 및 보유 기간)</h2>
+    <table>
+      <tr><th>항목</th><th>보유 기간</th></tr>
+      <tr><td>회원 정보</td><td>회원 탈퇴 후 즉시 파기 (단, 법령에 따라 보존이 필요한 경우 해당 기간)</td></tr>
+      <tr><td>접속·서비스 이용 로그</td><td>3개월</td></tr>
+      <tr><td>결제 관련 기록</td><td>5년 (전자상거래법)</td></tr>
+      <tr><td>소비자 불만·분쟁 처리 기록</td><td>3년 (전자상거래법)</td></tr>
+      <tr><td>고객 문의 내역</td><td>처리 완료 후 1년</td></tr>
+    </table>
 
-  <!-- 2 -->
-  <h2>2. 개인정보의 이용 목적</h2>
-  <ul>
-    <li>회원 가입 및 로그인 인증</li>
-    <li>AI 분석 서비스 제공 (단기·장기 주식 분석)</li>
-    <li>일일 AI 분석 한도 관리 (Free: 1회/일, Pro: 10회/일)</li>
-    <li>관심 종목 추적 서비스 제공</li>
-    <li>Pro 구독 관리 및 결제 처리</li>
-    <li>서비스 품질 향상 및 오류 수정</li>
-    <li>법령에 따른 의무 이행</li>
-  </ul>
+    <h2>제4조 (개인정보의 제3자 제공)</h2>
+    <p>회사는 이용자의 개인정보를 제1조에서 명시한 목적 범위 내에서만 처리하며, 원칙적으로 제3자에게 제공하지 않습니다. 다만, 다음의 경우에는 예외로 합니다.</p>
+    <ul>
+      <li>이용자가 사전에 동의한 경우</li>
+      <li>법령의 규정에 의한 경우 또는 수사기관의 적법한 요청이 있는 경우</li>
+    </ul>
 
-  <!-- 3 -->
-  <h2>3. 개인정보의 보유 및 이용 기간</h2>
-  <table>
-    <tr><th>항목</th><th>보유 기간</th></tr>
-    <tr><td>계정 정보 (이메일, 식별자)</td><td>서비스 탈퇴 후 즉시 파기</td></tr>
-    <tr><td>관심 종목 및 분석 기록</td><td>서비스 탈퇴 후 즉시 파기</td></tr>
-    <tr><td>결제 기록</td><td>전자상거래법에 따라 5년 보존</td></tr>
-    <tr><td>오류 로그 (Firebase)</td><td>수집 후 90일</td></tr>
-  </table>
+    <h2>제5조 (개인정보 처리의 위탁)</h2>
+    <p>회사는 서비스 운영을 위해 아래와 같이 개인정보 처리 업무를 위탁하고 있습니다.</p>
+    <table>
+      <tr><th>수탁 업체</th><th>위탁 업무 내용</th><th>보유 및 이용 기간</th></tr>
+      <tr><td>Apple Inc.</td><td>Apple 로그인 인증, 인앱 결제 처리, 푸시 알림 발송</td><td>서비스 제공 기간</td></tr>
+      <tr><td>Google LLC (Firebase)</td><td>앱 오류 분석, 서버 인프라</td><td>서비스 제공 기간</td></tr>
+      <tr><td>Railway Technologies Inc.</td><td>서버 호스팅</td><td>서비스 제공 기간</td></tr>
+    </table>
 
-  <!-- 4 -->
-  <h2>4. 개인정보의 제3자 제공</h2>
-  <p>회사는 이용자의 개인정보를 원칙적으로 외부에 제공하지 않습니다. 다만, 아래의 경우는 예외입니다.</p>
-  <ul>
-    <li>이용자가 사전에 동의한 경우</li>
-    <li>법령에 따라 수사기관이 적법한 절차로 요청하는 경우</li>
-  </ul>
+    <h2>제6조 (정보주체의 권리·의무 및 행사 방법)</h2>
+    <p>이용자는 회사에 대해 언제든지 다음 각 호의 개인정보 보호 관련 권리를 행사할 수 있습니다.</p>
+    <ul>
+      <li>개인정보 열람 요구</li>
+      <li>오류 등이 있을 경우 정정 요구</li>
+      <li>삭제 요구</li>
+      <li>처리 정지 요구</li>
+    </ul>
+    <p>권리 행사는 아래 개인정보 보호책임자에게 이메일로 요청하실 수 있으며, 회사는 이에 대해 지체 없이 조치하겠습니다.</p>
 
-  <!-- 5 -->
-  <h2>5. 개인정보 처리 위탁</h2>
-  <table>
-    <tr><th>수탁 업체</th><th>위탁 업무</th><th>보유 기간</th></tr>
-    <tr>
-      <td>Anthropic, Inc.</td>
-      <td>AI 분석 처리 (Claude API)</td>
-      <td>요청 처리 후 즉시 파기</td>
-    </tr>
-    <tr>
-      <td>Google LLC (Firebase)</td>
-      <td>오류 로그 수집 및 분석</td>
-      <td>90일</td>
-    </tr>
-    <tr>
-      <td>Apple Inc.</td>
-      <td>인앱 구독 결제 처리</td>
-      <td>Apple 정책에 따름</td>
-    </tr>
-    <tr>
-      <td>Railway Technologies, Inc.</td>
-      <td>서버 인프라 운영</td>
-      <td>계약 기간</td>
-    </tr>
-  </table>
+    <h2>제7조 (개인정보의 파기)</h2>
+    <p>회사는 개인정보 보유 기간이 경과하거나 처리 목적이 달성된 경우, 해당 개인정보를 지체 없이 파기합니다.</p>
+    <ul>
+      <li><strong>전자적 파일 형태:</strong> 복원이 불가능한 방법으로 영구 삭제</li>
+      <li><strong>종이 문서:</strong> 분쇄기로 분쇄 또는 소각</li>
+    </ul>
 
-  <!-- 6 -->
-  <h2>6. 이용자의 권리 및 행사 방법</h2>
-  <p>이용자는 언제든지 다음 권리를 행사할 수 있습니다.</p>
-  <ul>
-    <li><strong>열람 요청</strong>: 수집된 개인정보 확인</li>
-    <li><strong>정정·삭제 요청</strong>: 오류 정보 수정 또는 삭제</li>
-    <li><strong>처리 정지 요청</strong>: 개인정보 처리의 일시 중단</li>
-    <li><strong>탈퇴</strong>: 앱 내 설정 → 계정 삭제 또는 고객지원 이메일 요청</li>
-  </ul>
-  <div class="highlight-box">
-    권리 행사는 앱 내 고객지원 또는 이메일(<a href="mailto:ceo@studiomong.kr">ceo@studiomong.kr</a>)로 요청하실 수 있으며,
-    요청 수령 후 <strong>10영업일 이내</strong>에 처리합니다.
+    <h2>제8조 (개인정보의 안전성 확보 조치)</h2>
+    <p>회사는 개인정보의 안전성 확보를 위해 다음과 같은 조치를 취하고 있습니다.</p>
+    <ul>
+      <li>개인정보에 대한 접근 권한 최소화 및 접근 통제</li>
+      <li>개인정보의 암호화 (전송 구간 TLS/SSL 적용)</li>
+      <li>해킹 등 외부 침입 방지를 위한 보안 시스템 운영</li>
+      <li>개인정보 처리 직원 대상 정기 교육 실시</li>
+    </ul>
+
+    <h2>제9조 (만 14세 미만 아동의 개인정보 처리)</h2>
+    <p>회사의 서비스는 만 14세 이상을 대상으로 하며, 만 14세 미만 아동의 개인정보를 수집하지 않습니다. 만 14세 미만 아동이 회원으로 확인될 경우, 해당 계정 및 정보를 즉시 삭제합니다.</p>
+
+    <h2>제10조 (개인정보 보호책임자)</h2>
+    <div class="highlight">
+      <p><strong>개인정보 보호책임자</strong></p>
+      <p>성명: 전창평</p>
+      <p>소속: 주식회사 스튜디오몽 (StudioMong Inc.)</p>
+      <p>이메일: <a href="mailto:jcp1452@gmail.com">jcp1452@gmail.com</a></p>
+    </div>
+    <p>개인정보 보호 관련 문의, 불만처리, 피해구제 등에 관한 사항은 위 담당자에게 문의해 주시기 바랍니다.</p>
+    <p>기타 개인정보 침해에 대한 신고나 상담은 아래 기관에 문의하실 수 있습니다.</p>
+    <ul>
+      <li>개인정보 침해신고센터: <a href="https://privacy.kisa.or.kr" target="_blank">privacy.kisa.or.kr</a> / 국번없이 118</li>
+      <li>개인정보 분쟁조정위원회: <a href="https://www.kopico.go.kr" target="_blank">www.kopico.go.kr</a> / 1833-6972</li>
+      <li>대검찰청 사이버범죄수사단: 02-3480-3573</li>
+      <li>경찰청 사이버안전국: 국번없이 182</li>
+    </ul>
+
+    <h2>제11조 (개인정보처리방침의 변경)</h2>
+    <p>이 개인정보처리방침은 2026년 5월 15일부터 적용됩니다. 내용의 추가·삭제 및 수정이 있을 경우, 시행일 최소 7일 전에 앱 내 공지사항 또는 본 페이지를 통해 고지합니다.</p>
+
+    <footer>
+      <p>주식회사 스튜디오몽 (StudioMong Inc.)</p>
+      <p>대표: 전창평 &nbsp;|&nbsp; 이메일: jcp1452@gmail.com</p>
+      <p style="margin-top:8px;">© 2026 StudioMong Inc. All rights reserved.</p>
+    </footer>
   </div>
-
-  <!-- 7 -->
-  <h2>7. 개인정보 보호를 위한 기술적·관리적 조치</h2>
-  <ul>
-    <li>민감 정보(토큰, 키)는 iOS Keychain에 암호화하여 저장</li>
-    <li>서버 통신은 HTTPS(TLS 1.2 이상)만 사용</li>
-    <li>데이터베이스 접근 권한 최소화 및 정기 점검</li>
-    <li>직원 개인정보 접근 시 이중 인증 적용</li>
-    <li><code>ITSAppUsesNonExemptEncryption: false</code> — 수출 규정 암호화 미해당</li>
-  </ul>
-
-  <!-- 8 -->
-  <h2>8. 쿠키 및 유사 기술</h2>
-  <p>
-    StockLens 앱은 쿠키를 사용하지 않습니다. 다만, Firebase Analytics 및 Crashlytics는 앱 성능 분석을 위해
-    익명화된 이벤트 데이터를 자동 수집합니다. 이는 특정 개인을 식별하지 않습니다.
-  </p>
-
-  <!-- 9 -->
-  <h2>9. 개인정보 보호책임자</h2>
-  <table>
-    <tr><th>구분</th><th>내용</th></tr>
-    <tr><td>성명</td><td>전창평</td></tr>
-    <tr><td>직책</td><td>대표</td></tr>
-    <tr><td>이메일</td><td><a href="mailto:ceo@studiomong.kr">ceo@studiomong.kr</a></td></tr>
-    <tr><td>회사명</td><td>스튜디오몽 (studiomong)</td></tr>
-  </table>
-  <p>개인정보 침해에 대한 신고·상담은 아래 기관을 이용하실 수 있습니다.</p>
-  <ul>
-    <li>개인정보침해신고센터: <a href="https://privacy.kisa.or.kr" target="_blank">privacy.kisa.or.kr</a> / 국번없이 118</li>
-    <li>개인정보 분쟁조정위원회: <a href="https://www.kopico.go.kr" target="_blank">kopico.go.kr</a></li>
-    <li>대검찰청 사이버수사과: <a href="https://www.spo.go.kr" target="_blank">spo.go.kr</a> / 국번없이 1301</li>
-  </ul>
-
-  <!-- 10 -->
-  <h2>10. 방침 변경 안내</h2>
-  <p>
-    본 개인정보처리방침은 법령·서비스 변경에 따라 개정될 수 있습니다.
-    중요한 변경 사항은 앱 내 공지 또는 이메일로 사전 고지합니다.
-    변경된 방침은 시행일로부터 효력이 발생합니다.
-  </p>
-</div>
-
-<footer>
-  ⓒ 2026. studiomong. ALL rights reserved. &nbsp;|&nbsp;
-  <a href="/">StockLens 홈</a> &nbsp;|&nbsp;
-  <a href="mailto:ceo@studiomong.kr">ceo@studiomong.kr</a>
-</footer>
-
 </body>
 </html>
